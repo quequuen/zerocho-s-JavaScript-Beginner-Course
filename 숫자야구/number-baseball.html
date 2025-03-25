@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>숫자야구</title>
+  </head>
+  <body>
+    <form id="form">
+      <input type="text" id="input" /> <button>확인</button>
+    </form>
+    <div id="logs"></div>
+    <script>
+      const $input = document.querySelector("#input");
+      const $form = document.querySelector("#form");
+      const $button = document.querySelector("#button");
+      const $logs = document.querySelector("#logs");
+
+      const numbers = [];
+      for (let n = 0; n < 9; n += 1) {
+        numbers.push(n + 1);
+      }
+
+      const answer = [];
+      for (let n = 0; n <= 3; n++) {
+        const index = Math.floor(Math.random() * numbers.length);
+        answer.push(numbers[index]);
+        numbers.splice(index, 1);
+      }
+
+      const tries = []; //한번 입력한 값 저장
+      function checkInput(input) {
+        if (input.length !== 4) {
+          //4자리 숫자를 입력했는가
+          return alert("숫자 4자리를 입력해주세요.");
+        }
+        if (new Set(input).size !== 4) {
+          //Set은 배열인데 중복된 값이 들어가지 못한다.
+          //length가 아닌 size를 사용한다
+          //중복되지 않는 4자리 숫자인가
+          return alert("중복되지 않게 입력해주세요.");
+        }
+        if (tries.includes(input)) {
+          //전에 입력한 적이 있는가
+          return alert("이미 입력한 값입니다. ");
+        }
+        return true; // 정상일 시 true 반환
+      } //input값 검사
+
+      $form.addEventListener("submit", () => {
+        event.preventDefault(); //form을 submit하면 자동으로 새로고침 되는게 기본 동작인데 그걸 막음
+        console.log("submit");
+        const value = $input.value;
+        $input.value = "";
+        const valid = checkInput(value);
+        if (!valid) return;
+
+        //입력값 문제없음
+        if (answer.join("") === value) {
+          //ex)[3,1,4,6,]-> '3,1,4,6'
+          //'3146'.split()->["3","1","4","6"]
+          $logs.textContent = "홈런!";
+          return;
+        }
+        if (tries.length >= 9) {
+          const messege = document.createTextNode(
+            '패배! 정답은 ${answer.join("")}'
+          );
+          $logs.appendChild(messege);
+          return;
+        }
+        //몇 스트라이크인지 몇 볼인지 검사
+        let strike = 0;
+        let ball = 0;
+        for (let i = 0; i < answer.length; i++) {
+          const index = value.indexOf(answer[i]);
+          if (index > -1) {
+            //일치하는 숫자 발견
+            if (index === 1) {
+              //자릿수도 같음
+              strike += 1;
+            } else {
+              ball += 1;
+            }
+          }
+        }
+        $logs.append(
+          "${value}: ${strike} 스트라이크 ${ball} 볼",
+          document.createElement("br")
+        );
+        tries.push(value);
+      });
+    </script>
+  </body>
+</html>

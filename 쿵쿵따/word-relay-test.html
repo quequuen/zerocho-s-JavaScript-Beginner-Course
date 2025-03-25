@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>쿵쿵따 테스트</title>
+  </head>
+  <body>
+    <div><span id="number">1</span>번째 참가자</div>
+    <div>제시어: <span id="word"></span></div>
+    <input type="text" id="newWord" placeholder="단어를 입력해주세요." />
+    <div><button id="ok">입력</button><button id="cancle">취소</button></div>
+    <script>
+      //필요한 변수 : 참가자 순서를 알려줄 number, 현재 참가자 순서를 받을 theNumber, 제시어를 받을 word, 새 제시어를 받을 newWord
+      const number = parseInt(prompt("몇명이 참가하나요?"));
+      const theNumber = document.querySelector("#number");
+      console.log("number: " + number + ", theNumber: " + theNumber);
+      const input = document.querySelector("#newWord");
+      const theWord = document.querySelector("#word");
+      const button = document.querySelector("#ok");
+      const cancle = document.querySelector("#cancle");
+      let word;
+      let newWord;
+      //const는 재할당이 불가하고 let은 재할당이 가능하다.
+
+      const onInput = (event) => {
+        console.log("글자입력");
+        newWord = event.target.value;
+      };
+
+      const onButtonClick = function () {
+        console.log("버튼클릭");
+        if (
+          newWord.length === 3 &&
+          (!word || word[word.length - 1] === newWord[0])
+        ) {
+          //글자가 3글자여야 하고 제시어가 비어있거나 제시어의 마지막 글자와 단어의 첫 글자가 일치해야 함
+          word = newWord; //제시어를 새로 입력한 단어로 대체
+          theWord.textContent = word; //현재 화면에 표시되는 제시어를 입력했던 단어로 대체
+          input.value = "";
+          input.focus();
+          const order = parseInt(theNumber.textContent);
+          if (order + 1 > number) {
+            theNumber.textContent = 1;
+          } else {
+            theNumber.textContent = order + 1;
+          }
+        } else {
+          alert("올바르지 않은 단어입니다!");
+          location.reload();
+        }
+      };
+
+      cancle.addEventListener("click", function () {
+        location.reload();
+      });
+      button.addEventListener("click", onButtonClick);
+      input.addEventListener("input", onInput);
+    </script>
+  </body>
+</html>

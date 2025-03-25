@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>끝말잇기</title>
+</head>
+<body>
+    <div><span id="order">1</span>번째 참가자</div>
+    <div>제시어: <span id="word"></span></div>
+    <input type="text">
+    <button>입력</button>
+    <script>
+          const number = parseInt(prompt('몇 명 참가하나요?'));  //참가자 수(현재 순서가 되는 숫자와 비교할 전체 참가자 수)
+          console.log('number: '+number);
+        //   alert('number: '+number);
+          const $button = document.querySelector('button');  //입력 버튼 작동
+          console.log('button'+$button);
+          const $input = document.querySelector('input');  //현재 입력한 새 단어
+          console.log('input'+$input);
+          const $word = document.querySelector('#word');  //현재 제시어
+          const $order = document.querySelector('#order');  //현재 순서
+          let word; //제시어
+          let newWord; //새로 입력한 단어
+        //   const yesOrNo = confirm('맞나요?');
+        //   console.log(yesOrNo);
+        
+
+        //   document.querySelector('input').addEventListener('input',function(){
+        //     console.log('글자입력');
+        //   })
+        
+        // document.querySelector('input').addEventListener('input',(event) => {
+        //     console.log('글자입력',event.target.value);
+        //   })
+
+        const onInput = (event) => {
+            console.log('글자입력');
+            newWord = event.target.value;
+        }
+        
+        
+          const onClickButton = function(){
+            console.log('버튼클릭');
+            // if(!word){  //제시어가 비어있는가?
+            //         //비어있다
+            //         word = newWord; //입력한 단어가 제시어가 된다.
+            //         $word.textContent = word;
+            //         $input.value = '';
+            //         $input.focus();
+            //         //input(select, textarea 등 입력 태그들)은 안에 들어가는 값을 value, span이나 다른 태그들은 안에 들어가는 값을 textContent로 치환한다.
+            //         const order = parseInt($order.textContent);
+            //         console.log(order);
+            //         if(order +1 >number){
+            //           $order.textContent = 1;
+            //         }else{
+            //           $order.textContent = order+1;
+            //         }
+            // }else{  //비어있지 않다
+            //   if(word[word.length-1]===newWord[0]){
+            //          word = newWord; //입력한 단어가 제시어가 된다.
+            //          $word.textContent = word;
+            //          $input.value = '';
+            //          $input.focus();
+            //          const order = parseInt($order.textContent);
+            //         console.log(order);
+            //         if(order +1 >number){
+            //           $order.textContent = 1;
+            //         }else{
+            //           $order.textContent = order+1;
+            //         }
+            //   }else{
+            //         alert('올바르지 않은 단어입니다!');
+            //   }
+                    
+            // }
+
+            if(!word||word[word.length-1]===newWord[0]){
+                word = newWord; //입력한 단어가 제시어가 된다.
+                $word.textContent = word;
+                $input.value = '';
+                $input.focus();
+                const order = parseInt($order.textContent);
+                console.log(order);
+                if(order +1 >number){
+                  $order.textContent = 1;
+                }else{
+                  $order.textContent = order+1;
+                }
+            }else{
+              alert('올바르지 않은 단어입니다!');
+            }
+          }
+
+        //   const onClick = () =>{
+        //     console.log('버튼입력');
+        //   };
+
+        //   document.querySelector('button').addEventListener('click',onClickButton); //함수 자리에 함수가 아닌 함수를 넣어준 변수를 호출하기 때문에 onClick()이 아닌 onClick
+          $input.addEventListener('input',onInput);
+          $button.addEventListener('click',onClickButton);
+    </script>
+</body>
+</html>
