@@ -22,13 +22,53 @@
     <script>
       const $computer = document.querySelector("#computer");
       const $score = document.querySelector("#score");
-      const $scissors = document.querySelector("#paper");
+      const $scissors = document.querySelector("#scissors");
       const $paper = document.querySelector("#paper");
       const $rock = document.querySelector("#rock");
-      const IMG_URL = "./rsp.png";
+      const IMG_URL = "./media/rsp.png";
 
-      $computer.style.background = `url(${IMG_URL}) 0 0`;
-      $computer.style.backgroundSize = "auto 200px";
+      $computer.style.background = `url(${IMG_URL}) 0 0`; //url 뒤는 background 포지션 가로 / 세로 해당 포지션은 현재 가위
+      //바위 -220px 0 / 보 -440px 0
+      $computer.style.backgroundSize = "auto 200px"; //가로 auto 세로 200
+
+      const rspX = {
+        scissors: "0",
+        rock: "-220px",
+        paper: "-440px",
+      };
+
+      let computerChoice = "scissors";
+      //변수명은 최대한 자세하게
+      const changeComputerHand = () => {
+        if (computerChoice === "scissors") {
+          computerChoice = "rock";
+        } else if (computerChoice === "rock") {
+          computerChoice = "paper";
+        } else if (computerChoice === "paper") {
+          computerChoice = "scissors";
+        }
+        //rspX.computerChoice(x)->rspX[computerChoice] rspX가 "객체"이기 때문
+        $computer.style.background = `url(${IMG_URL}) ${rspX[computerChoice]} 0`;
+        $computer.style.backgroundSize = "auto 200px";
+      };
+
+      let intervalId = setInterval(changeComputerHand, 50); //changeComputerHand()x, 함수에 함수를 호출하면 return 값이 나와버림
+      // 그렇기 때문에 실행이 되는 게 아니라 undefined가 return 돼서 아무것도 안함
+      //setInterval은 setTimeout을 재귀함수로 바꿀 수 있음(근데 비동기임, 자바스크립트 구조상 다름)
+      //사실 setInterval은 리턴값이 있음
+
+      const clickButton = () => {
+        clearInterval(intervalId);
+        //점수 계산 및 화면 표시
+        setTimeout(() => {
+          clearInterval(intervalId); //비동기라서 1초 후, 다시 초기화
+          intervalId = setInterval(changeComputerHand, 50);
+        }, 1000);
+      };
+
+      $rock.addEventListener("click", clickButton);
+      $scissors.addEventListener("click", clickButton);
+      $paper.addEventListener("click", clickButton);
     </script>
   </body>
 </html>
