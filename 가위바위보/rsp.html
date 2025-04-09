@@ -56,14 +56,19 @@
       // 그렇기 때문에 실행이 되는 게 아니라 undefined가 return 돼서 아무것도 안함
       //setInterval은 setTimeout을 재귀함수로 바꿀 수 있음(근데 비동기임, 자바스크립트 구조상 다름)
       //사실 setInterval은 리턴값이 있음
-
+      let clickable = true; //해당 변수로 버튼을 누를 시, 1초 동안 버튼에 이벤트가 실행되지 못하게 함(setTimeout이 동시에 여러번 작동하는 것을 막음)
       const clickButton = () => {
-        clearInterval(intervalId);
-        //점수 계산 및 화면 표시
-        setTimeout(() => {
-          clearInterval(intervalId); //비동기라서 1초 후, 다시 초기화
-          intervalId = setInterval(changeComputerHand, 50);
-        }, 1000);
+        if (clickable) {
+          clearInterval(intervalId);
+          //점수 계산 및 화면 표시
+          clickable = false;
+
+          setTimeout(() => {
+            clickable = true;
+            clearInterval(intervalId); //비동기라서 1초 후, 다시 초기화
+            intervalId = setInterval(changeComputerHand, 50);
+          }, 1000);
+        }
       };
 
       $rock.addEventListener("click", clickButton);
