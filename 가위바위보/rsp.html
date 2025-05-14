@@ -14,9 +14,9 @@
   <body>
     <div id="computer"></div>
     <div>
-      <button id="scissors">가위</button>
-      <button id="rock">바위</button>
-      <button id="paper">보</button>
+      <button id="scissors" class="btn">가위</button>
+      <button id="rock" class="btn">바위</button>
+      <button id="paper" class="btn">보</button>
     </div>
     <div id="score">0</div>
     <script>
@@ -26,6 +26,7 @@
       const $paper = document.querySelector("#paper");
       const $rock = document.querySelector("#rock");
       const IMG_URL = "./media/rsp.png";
+      let score = 0;
 
       $computer.style.background = `url(${IMG_URL}) 0 0`; //url 뒤는 background 포지션 가로 / 세로 해당 포지션은 현재 가위
       //바위 -220px 0 / 보 -440px 0
@@ -56,13 +57,43 @@
       // 그렇기 때문에 실행이 되는 게 아니라 undefined가 return 돼서 아무것도 안함
       //setInterval은 setTimeout을 재귀함수로 바꿀 수 있음(근데 비동기임, 자바스크립트 구조상 다름)
       //사실 setInterval은 리턴값이 있음
+
+      const scoreTable = {
+        rock: 0,
+        scissors: 1,
+        paper: -1,
+      };
       let clickable = true; //해당 변수로 버튼을 누를 시, 1초 동안 버튼에 이벤트가 실행되지 못하게 함(setTimeout이 동시에 여러번 작동하는 것을 막음)
       const clickButton = () => {
         if (clickable) {
           clearInterval(intervalId);
-          //점수 계산 및 화면 표시
           clickable = false;
+          //점수 계산 및 화면 표시
+          const myChoice =
+            event.target.textContent === "바위"
+              ? "rock"
+              : event.target.textContent === "가위"
+              ? "scissors"
+              : "paper";
+          const myScore = scoreTable[myChoice];
+          const computerScore = scoreTable[computerChoice];
+          const diff = myScore - computerScore;
+          //diff ==='고양이'||diff==='사자'||diff==='강아지'||diff==='거북이'
+          //['고양이','사자','강아지','거북이'].indexOf(diff)
 
+          let message;
+
+          //2,-1은 승리 조건이고, -2,1은 패배 조건, 점수표 참고
+          if ([2, -1].includes(diff)) {
+            score += 1;
+            message = "승리";
+          } else if ([-2, 1].includes(diff)) {
+            score -= 1;
+            message = "패배";
+          } else {
+            message = "무승부";
+          }
+          $score.textContent = `${message}: 총 ${score}점`;
           setTimeout(() => {
             clickable = true;
             clearInterval(intervalId); //비동기라서 1초 후, 다시 초기화
