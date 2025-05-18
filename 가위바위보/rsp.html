@@ -26,7 +26,8 @@
       const $paper = document.querySelector("#paper");
       const $rock = document.querySelector("#rock");
       const IMG_URL = "./media/rsp.png";
-      let score = 0;
+      let computer = 0;
+      let me = 0;
 
       $computer.style.background = `url(${IMG_URL}) 0 0`; //url 뒤는 background 포지션 가로 / 세로 해당 포지션은 현재 가위
       //바위 -220px 0 / 보 -440px 0
@@ -85,20 +86,30 @@
 
           //2,-1은 승리 조건이고, -2,1은 패배 조건, 점수표 참고
           if ([2, -1].includes(diff)) {
-            score += 1;
+            me += 1;
+            computer -= 1;
             message = "승리";
           } else if ([-2, 1].includes(diff)) {
-            score -= 1;
+            me -= 1;
+            computer += 1;
             message = "패배";
           } else {
             message = "무승부";
           }
-          $score.textContent = `${message}: 총 ${score}점`;
-          setTimeout(() => {
-            clickable = true;
-            clearInterval(intervalId); //비동기라서 1초 후, 다시 초기화
-            intervalId = setInterval(changeComputerHand, 50);
-          }, 1000);
+
+          if (me >= 3) {
+            //예외가 발생할 수 있으니 항상 불가능한 상황도 생각하기! ===가 아닌 >= 사용
+            $score.textContent = `나의 승리 ${me}:${computer}`;
+          } else if (computer >= 3) {
+            $score.textContent = `컴퓨터의 승리 ${me}:${computer}`;
+          } else {
+            $score.textContent = `${message}: 총 ${me}점`;
+            setTimeout(() => {
+              clickable = true;
+              clearInterval(intervalId); //비동기라서 1초 후, 다시 초기화
+              intervalId = setInterval(changeComputerHand, 50);
+            }, 1000);
+          }
         }
       };
 
