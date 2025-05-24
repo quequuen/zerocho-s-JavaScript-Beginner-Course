@@ -51,7 +51,7 @@
           endTime = new Date();
           $result.textContent = `${endTime - startTime}ms`;
           $screen.classList.remove("now");
-          $screen.slassList.add("waiting");
+          $screen.classList.add("waiting");
           $screen.textContent = "클릭해서 시작하세요.";
           //시간 차이 저장하기
         }
