@@ -30,6 +30,8 @@
     <script>
       const $screen = document.querySelector("#screen");
       const $result = document.querySelector("#result");
+      let endTime, startTime; //이벤트 리스너 밖에 하는 이유: 각각의 클릭을 할 때 이벤트가 한번 시작했다 종료하기 때문에
+      // 파란 화면을 누를 때의 startTime과 초록색 화면을 누를 때의 startTime은 다른 변수이다. (블록 스코프 문제)
 
       $screen.addEventListener("click", (e) => {
         if (e.target.classList.contains("waiting")) {
@@ -37,6 +39,7 @@
           $screen.classList.add("ready");
           $screen.textContent = "초록색이 되면 클릭하세요";
           setTimeout(function () {
+            startTime = new Date(); //new Date()는 밀리초로 하기 때문에 날짜를 구할 경우 60/ 60/ 60/ 24 이렇게 해줘야 날짜가 계산됨
             $screen.classList.remove("ready");
             $screen.classList.add("now");
             $screen.textContent = "클릭하세요!";
@@ -45,6 +48,11 @@
         } else if (e.target.classList.contains("ready")) {
         } else if (e.target.classList.contains("now")) {
           //끝 시간 재기
+          endTime = new Date();
+          $result.textContent = `${endTime - startTime}ms`;
+          $screen.classList.remove("now");
+          $screen.slassList.add("waiting");
+          $screen.textContent = "클릭해서 시작하세요.";
           //시간 차이 저장하기
         }
       });
