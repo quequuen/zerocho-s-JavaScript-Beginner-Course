@@ -32,6 +32,7 @@
       const $result = document.querySelector("#result");
       let endTime, startTime; //이벤트 리스너 밖에 하는 이유: 각각의 클릭을 할 때 이벤트가 한번 시작했다 종료하기 때문에
       // 파란 화면을 누를 때의 startTime과 초록색 화면을 누를 때의 startTime은 다른 변수이다. (블록 스코프 문제)
+      const records = [];
 
       $screen.addEventListener("click", (e) => {
         if (e.target.classList.contains("waiting")) {
@@ -47,9 +48,21 @@
           }, Math.floor(Math.random() * 1000) + 2000); //2초에서 3초 사이 2000~3000 사이
         } else if (e.target.classList.contains("ready")) {
         } else if (e.target.classList.contains("now")) {
-          //끝 시간 재기
           endTime = new Date();
-          $result.textContent = `${endTime - startTime}ms`;
+          const current = endTime - startTime;
+          records.push(current);
+
+          //배열은 const여도 push가 가능함(재할당만 불가!)
+          const average = records.reduce((a, c) => a + c) / records.length; //reduce를 사용한 평균 구하기
+          //['철수','영희','현영','한솔'].reduce((a,c,i)=>{a[i]=c; return a},{})
+          //{0:'철수',1:'영희',2:현영,3:한솔} reduce 사용해서 배열을 객체로 바꾸기
+          //i는 forEach와 비슷함
+          //a의 초기값은 {}
+
+          $result.textContent = `현재 ${current}ms, 평균: ${average}ms`;
+          //startTime, endTime 이 null이 되지 않는다면 이전 값이 나중에 잘못 들어갈 수 있는 경우를 방지
+          startTime = null;
+          endTime = null;
           $screen.classList.remove("now");
           $screen.classList.add("waiting");
           $screen.textContent = "클릭해서 시작하세요.";
