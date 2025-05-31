@@ -66,6 +66,15 @@
           //a의 초기값은 {}
 
           $result.textContent = `현재 ${current}ms, 평균: ${average}ms`;
+          const topFive = records.sort((p, c) => p - c).slice(0, 5);
+
+          topFive.forEach((top, index) => {
+            //debugger; ->console.log 보다 더 자세한 내용을 개발자도구에서 확인 가능
+            $result.append(
+              document.createElement("br"),
+              `${index + 1}위: ${top}ms`
+            );
+          });
           //startTime, endTime 이 null이 되지 않는다면 이전 값이 나중에 잘못 들어갈 수 있는 경우를 방지
           startTime = null;
           endTime = null;
