@@ -18,7 +18,7 @@
   </head>
   <body>
     <script>
-      let turn = 0;
+      let turn = "O";
       const data = [];
       for (let i = 0; i < 3; i++) {
         data.push([]);
@@ -31,6 +31,7 @@
           const $td = document.createElement("td");
           $td.addEventListener("click", (event) => {
             console.log("clicked");
+            console.log(turn);
             if (event.target.textContent) return;
             event.target.textContent = turn;
             if (turn === "O") {
