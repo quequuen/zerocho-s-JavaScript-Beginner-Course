@@ -19,16 +19,17 @@
   <body>
     <script>
       let turn = "O";
-      const data = [];
-      for (let i = 0; i < 3; i++) {
-        data.push([]);
-      }
+      const { body } = document;
       const $table = document.createElement("table");
+      const $result = document.createElement("div");
+      const data = [];
 
       for (let i = 0; i < 3; i++) {
         const $tr = document.createElement("tr");
-        for (let i = 0; i < 3; i++) {
+        const cells = [];
+        for (let j = 0; j < 3; j++) {
           const $td = document.createElement("td");
+          cells.push($td);
           $td.addEventListener("click", (event) => {
             console.log("clicked");
             console.log(turn);
@@ -42,9 +43,12 @@
           });
           $tr.append($td);
         }
+        data.push(cells);
         $table.append($tr);
       }
-      document.body.append($table);
+      body.append($table);
+      body.append($result);
+      console.log(data);
     </script>
   </body>
 </html>
