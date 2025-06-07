@@ -24,23 +24,32 @@
       const $result = document.createElement("div");
       const data = [];
 
+      const callback = (event) => {
+        console.log("clicked");
+        if (event.target.textContent) {
+          //칸이 이미 채워져 있을 경우
+          console.log("빈칸이 아닙니다.");
+        }
+        //빈칸일 경우
+        console.log("빈칸입니다.");
+        event.target.textContent = turn;
+        turn = turn === "O" ? "X" : "O";
+        if (turn === "O") {
+          turn = "X";
+        } else if (turn === "X") {
+          turn = "O";
+        }
+      };
+
       for (let i = 0; i < 3; i++) {
         const $tr = document.createElement("tr");
         const cells = [];
         for (let j = 0; j < 3; j++) {
           const $td = document.createElement("td");
           cells.push($td);
-          $td.addEventListener("click", (event) => {
-            console.log("clicked");
-            console.log(turn);
-            if (event.target.textContent) return;
-            event.target.textContent = turn;
-            if (turn === "O") {
-              turn = "X";
-            } else if (turn === "X") {
-              turn = "O";
-            }
-          });
+          $td.addEventListener("click", callback);
+          //eventListener에서 쓰는 함수는 호출이 아님
+          //먼저 호출하면 event를 못 읽음
           $tr.append($td);
         }
         data.push(cells);
