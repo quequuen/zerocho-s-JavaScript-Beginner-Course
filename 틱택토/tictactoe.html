@@ -29,16 +29,13 @@
         if (event.target.textContent) {
           //칸이 이미 채워져 있을 경우
           console.log("빈칸이 아닙니다.");
+          return;
+          //event.currentTarget -> 이벤트의 주체가 $td가 아니라 $table이 된다
         }
         //빈칸일 경우
         console.log("빈칸입니다.");
         event.target.textContent = turn;
         turn = turn === "O" ? "X" : "O";
-        if (turn === "O") {
-          turn = "X";
-        } else if (turn === "X") {
-          turn = "O";
-        }
       };
 
       for (let i = 0; i < 3; i++) {
@@ -47,11 +44,13 @@
         for (let j = 0; j < 3; j++) {
           const $td = document.createElement("td");
           cells.push($td);
-          $td.addEventListener("click", callback);
-          //eventListener에서 쓰는 함수는 호출이 아님
-          //먼저 호출하면 event를 못 읽음
           $tr.append($td);
         }
+        $table.addEventListener("click", callback);
+        //이벤트 버블링을 이용해 table에 이벤트를 달아줌
+        //이벤트 캡처링은 따로 설정을 해줘야 쓸 수 있는 개념(팝업 밖의 영역을 눌러 팝업을 닫을 때 정도에서 사용함)
+        //eventListener에서 쓰는 함수는 호출이 아님
+        //먼저 호출하면 event를 못 읽음
         data.push(cells);
         $table.append($tr);
       }
