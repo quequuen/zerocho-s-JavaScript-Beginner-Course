@@ -22,7 +22,48 @@
       const { body } = document;
       const $table = document.createElement("table");
       const $result = document.createElement("div");
-      const data = [];
+      const rows = [];
+
+      const checkWinner = (target) => {
+        let rowIndex;
+        let cellIndex;
+        rows.forEach((row, ri) => {
+          row.forEach((cell, ci) => {
+            if (cell === target) {
+              rowIndex = ri;
+              cellIndex = ci;
+            }
+          });
+        });
+
+        let hashWinner = false;
+        //가로줄 검사
+        if (
+          rows[rowIndex][0].textContent === turn &&
+          rows[rowIndex][1].textContent === turn &&
+          rows[rowIndex][2].textContent === turn
+        ) {
+          hashWinner = true;
+        }
+        //세로줄 검사
+        if (
+          rows[cellIndex][0].textContent === turn &&
+          rows[cellIndex][1].textContent === turn &&
+          rows[cellIndex][2].textContent === turn
+        ) {
+          hashWinner = true;
+        }
+        //대각선 검사
+        if (
+          rows[0][0].textContent === turn &&
+          rows[1][1].textContent === turn &&
+          rows[2][2].textContent === turn
+        ) {
+          hashWinner = true;
+        }
+
+        return hashWinner;
+      };
 
       const callback = (event) => {
         console.log("clicked");
@@ -35,6 +76,25 @@
         //빈칸일 경우
         console.log("빈칸입니다.");
         event.target.textContent = turn;
+        if (checkWinner(event.target)) {
+          $result.textContent = `${turn}님이 승리!`;
+          $table.removeEventListener("click", callback);
+          //자기 자신을 없앰
+          return;
+        }
+        //무승부 검사
+        let draw = true;
+        rows.forEach((row) => {
+          row.forEach((cell) => {
+            if (!cell.textContent) {
+              draw = false;
+            }
+          });
+        });
+        if (draw) {
+          $result.textContent = "무승부";
+          return;
+        }
         turn = turn === "O" ? "X" : "O";
       };
 
@@ -51,12 +111,12 @@
         //이벤트 캡처링은 따로 설정을 해줘야 쓸 수 있는 개념(팝업 밖의 영역을 눌러 팝업을 닫을 때 정도에서 사용함)
         //eventListener에서 쓰는 함수는 호출이 아님
         //먼저 호출하면 event를 못 읽음
-        data.push(cells);
+        rows.push(cells);
         $table.append($tr);
       }
       body.append($table);
       body.append($result);
-      console.log(data);
+      console.log(rows);
     </script>
   </body>
 </html>
