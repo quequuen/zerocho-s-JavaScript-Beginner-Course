@@ -25,16 +25,19 @@
       const rows = [];
 
       const checkWinner = (target) => {
-        let rowIndex;
-        let cellIndex;
-        rows.forEach((row, ri) => {
-          row.forEach((cell, ci) => {
-            if (cell === target) {
-              rowIndex = ri;
-              cellIndex = ci;
-            }
-          });
-        });
+        const rowIndex = target.parentNode.rowIndex;
+        const cellIndex = target.cellIndex;
+
+        // td에는 cellIndex, tr은 rowIndex를 가지고 있음
+        // 밑에 코드를 target이 가지고 있는 값으로 위에 두 줄로 대체함
+        // rows.forEach((row, ri) => {
+        //   row.forEach((cell, ci) => {
+        //     if (cell === target) {
+        //       rowIndex = ri;
+        //       cellIndex = ci;
+        //     }
+        //   });
+        // });
 
         let hashWinner = false;
         //가로줄 검사
@@ -76,21 +79,33 @@
         //빈칸일 경우
         console.log("빈칸입니다.");
         event.target.textContent = turn;
-        if (checkWinner(event.target)) {
+        //승부 판단하기
+        const hasWinner = checkWinner(event, target);
+
+        if (hasWinner) {
           $result.textContent = `${turn}님이 승리!`;
           $table.removeEventListener("click", callback);
           //자기 자신을 없앰
           return;
         }
         //무승부 검사
-        let draw = true;
-        rows.forEach((row) => {
-          row.forEach((cell) => {
-            if (!cell.textContent) {
-              draw = false;
-            }
-          });
-        });
+        const draw = rows.flast().every((cell) => cell.textContent);
+        // flat()은 3차원 배열-> 2차원 배열, 2차원 배열-> 1차원 배열
+        // rows.forEach((row) => {
+        //   row.forEach((cell) => {
+        //     if (!cell.textContent) {
+        //       draw = false;
+        //     }
+        //   });
+        // });
+        //첫번째 칸부터 빈칸일 때 반복문을 멈춰줘야 좋은 코드인데 해당 코드는 그러질 못함(비효율)
+        //forEach도 함수라서 기본적으로 return undefined기 때문에 return 써도 똑같음
+        //forEach로는 중간에 멈추기 어려움
+        // -> 해당 문제를 해결하기 위해 배열에서는 every를 사용(every는 1차원 배열에만 사용 가능)
+        // 2차원 배열을 flat() 하면 1차원 배열로 펴짐 ex) rows.flat() => [td,td,td,td,td,td,td,td,td]
+        // 모두 차있으면 true로 만들고 싶다  -> every()
+        // 하나라도 칸이 차 있으면 false로 만들고 싶다 -> some()
+
         if (draw) {
           $result.textContent = "무승부";
           return;
