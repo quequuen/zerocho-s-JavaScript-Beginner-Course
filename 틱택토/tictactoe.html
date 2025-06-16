@@ -40,27 +40,18 @@
         // });
 
         let hashWinner = false;
-        //가로줄 검사
         if (
-          rows[rowIndex][0].textContent === turn &&
-          rows[rowIndex][1].textContent === turn &&
-          rows[rowIndex][2].textContent === turn
-        ) {
-          hashWinner = true;
-        }
-        //세로줄 검사
-        if (
-          rows[cellIndex][0].textContent === turn &&
-          rows[cellIndex][1].textContent === turn &&
-          rows[cellIndex][2].textContent === turn
+          rows[0][cellIndex].textContent === turn &&
+          rows[1][cellIndex].textContent === turn &&
+          rows[2][cellIndex].textContent === turn
         ) {
           hashWinner = true;
         }
         //대각선 검사
         if (
-          rows[0][0].textContent === turn &&
+          rows[0][2].textContent === turn &&
           rows[1][1].textContent === turn &&
-          rows[2][2].textContent === turn
+          rows[2][0].textContent === turn
         ) {
           hashWinner = true;
         }
@@ -73,12 +64,14 @@
         //승자가 있으면
         if (hashWinner) {
           $result.textContent = `${turn}님이 승리!`;
+          $table.removeEventListener("click", callback);
           return;
         }
         //승자가 없으면
         const draw = rows.flat().every((cell) => cell.textContent);
         if (draw) {
           $result.textContent = "무승부";
+          $table.removeEventListener("click", callback);
           return;
         }
         turn = turn === "X" ? "O" : "X";
@@ -155,7 +148,6 @@
       }
       body.append($table);
       body.append($result);
-      console.log(rows);
     </script>
   </body>
 </html>
