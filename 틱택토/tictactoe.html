@@ -47,6 +47,13 @@
         ) {
           hashWinner = true;
         }
+        if (
+          rows[rowIndex][0].textContent === turn &&
+          rows[rowIndex][1].textContent === turn &&
+          rows[rowIndex][2].textContent === turn
+        ) {
+          hashWinner = true;
+        }
         //대각선 검사
         if (
           rows[0][2].textContent === turn &&
@@ -77,7 +84,10 @@
         turn = turn === "X" ? "O" : "X";
       };
 
+      let clickable = true;
+
       const callback = (event) => {
+        if (!clickable) return;
         console.log("clicked");
         if (event.target.textContent) {
           //칸이 이미 채워져 있을 경우
@@ -122,11 +132,15 @@
         // turn = turn === "O" ? "X" : "O";
 
         if (turn === "X") {
-          const emptyCells = rows.flat().filter((v) => !v.textContent);
-          const randomCell =
-            emptyCells[Math.floor(Math.random() * emptyCells.length)];
-          randomCell.textContent = "X";
-          checkWinnerAndDraw(randomCell);
+          clickable = false;
+          setTimeout(() => {
+            const emptyCells = rows.flat().filter((v) => !v.textContent);
+            const randomCell =
+              emptyCells[Math.floor(Math.random() * emptyCells.length)];
+            randomCell.textContent = "X";
+            checkWinnerAndDraw(randomCell);
+            clickable = true;
+          }, 1000);
         }
       };
 
