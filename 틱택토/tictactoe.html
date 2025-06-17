@@ -62,6 +62,13 @@
         ) {
           hashWinner = true;
         }
+        if (
+          rows[0][0].textContent === turn &&
+          rows[1][1].textContent === turn &&
+          rows[2][2].textContent === turn
+        ) {
+          hashWinner = true;
+        }
 
         return hashWinner;
       };
@@ -140,7 +147,7 @@
             randomCell.textContent = "X";
             checkWinnerAndDraw(randomCell);
             clickable = true;
-          }, 1000);
+          }, Math.floor(Math.random() * 1000 + 1));
         }
       };
 
