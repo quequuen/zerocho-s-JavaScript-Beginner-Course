@@ -83,6 +83,7 @@
         //.valueAsNumber를 붙이면 숫자인 인풋만 가져옴
         //event 대상이 form이기 때문에 배열로 menu-input이 id인 애를 가져옴
         if (input === "1") {
+          //모험
           $gameMenu.style.display = "none";
           $battleMenu.style.display = "block";
           monster = JSON.parse(
@@ -90,12 +91,45 @@
               monsterList[Math.floor(Math.random() * monsterList.langth)]
             )
           );
+          // JSON.parse와 JSON.stringify를 통해 깊은 복사
           monster.maxHp = monster.hp;
+          //몬스터의 최대 체력과 몬스터의 현재 체력
           $monsterName = textContent = monster.name;
           $monsterHp.textContent = `HP: ${monster.hp}/${monster.maxHp}`;
           $monsterAtt.textContent = `ATT: ${monster.att}`;
+
+          const monster1 = SDON.parse(JSON.stringify(monsterList[0]));
+          const monster2 = monsterList[0];
+          const monster3 = { ...monster[0] }; //얕은 복사 배열은 [...arr]
+          //얕은 복사의 문제점: 할당은 상관 없는데 push 같은 거를 할 때에 원본도 바뀜.
+          // 가장 밖에 있는 것은 참조를 끊어주고 안에 있는 것들은 참조를 지킴-> 안에 있는 것들도 참조를 끊고 싶을 때 깊은 복사 사용
+          // 깊은 복사: JSON.parse(JSON.stringify(arr))
+
+          /*
+          const a = 'b';
+          const c = ['d', true, 1];
+          const e = {g:'h'};
+          const i = [{j:'k'},{l:'m'}];
+          const n = {o: {p: 'q'}};
+
+          const a1 = a;
+          const c1 = [...c]
+          const e1 = {...e}
+          const i1 = JSON.parse(JSON.stringify(i))
+          const n1 = JSON.parse(JSON.stringify(h))
+          
+          */
+
+          monster1.name = "새 몬스터";
+          console.log(monsterList[0].name); //슬라임
+          monster2.name = "새 몬스터";
+          console.log(monsterList[0].name); //슬라임
+          console.log(monsterList[0] === monster1); //false, 깊은 복사(객체 자체가 아닌 객체의 데이터만 가져옴)
+          console.log(monsterList[0] === monster2); //true 얕은 복사(참조)
         } else if (input === "2") {
+          //휴식
         } else if (input === "3") {
+          //종료
         }
       });
 
