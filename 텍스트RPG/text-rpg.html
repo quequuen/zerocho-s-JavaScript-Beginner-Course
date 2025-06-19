@@ -44,14 +44,62 @@
       const $gameMenu = document.querySelector("#game-menu");
       const $battleMenu = document.querySelector("#battle-menu");
       const $heroName = document.querySelector("#hero-name");
+      const $heroLevel = document.querySelector("#hero-level");
+      const $heroHp = document.querySelector("#hero-hp");
+      const $heroXp = document.querySelector("#hero-xp");
+      const $heroAtt = document.querySelector("#hero-att");
+      const $monsterName = document.querySelector("#monster-name");
+      const $monsterHp = document.querySelector("#monster-hp");
+      const $monsterAtt = document.querySelector("#monster-att");
+      const $message = document.querySelector("#messge");
 
+      // const heroInitialStat = { 변수명은 최대한 구체적으로
+      const hero = {
+        name: "",
+        lev: 1,
+        maxHp: 100,
+        hp: 100,
+        xp: 0,
+        maxXp: 0,
+        att: 100,
+      };
+      let monster = null;
       $startScreen.addEventListener("submit", (event) => {
         event.preventDefault();
         const name = event.target["name-input"].value;
         $startScreen.style.display = "none";
         $gameMenu.style.display = "block";
         $heroName.textContent = name;
+        $heroLevel.textContent = `${hero.lex}Lev`;
+        $heroHp.textContent = `HP: ${hero.hp}/${hero.maxHp}`;
+        $heroXp.textContent = `XP: ${hero.xp}/${15 * hero.lev}`;
+        $heroAtt.textContent = `ATT: ${hero.att}`;
+        hero.name = name;
       });
+
+      $gameMenu.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const input = event.target["menu-input"].value; // input의 value는 type="number"가 아닌 이상 text
+        //.valueAsNumber를 붙이면 숫자인 인풋만 가져옴
+        //event 대상이 form이기 때문에 배열로 menu-input이 id인 애를 가져옴
+        if (input === "1") {
+          $gameMenu.style.display = "none";
+          $battleMenu.style.display = "block";
+          monster = JSON.parse(
+            JSON.stringify(
+              monsterList[Math.floor(Math.random() * monsterList.langth)]
+            )
+          );
+          monster.maxHp = monster.hp;
+          $monsterName = textContent = monster.name;
+          $monsterHp.textContent = `HP: ${monster.hp}/${monster.maxHp}`;
+          $monsterAtt.textContent = `ATT: ${monster.att}`;
+        } else if (input === "2") {
+        } else if (input === "3") {
+        }
+      });
+
+      $battleMenu.addEventListener("submit", (event) => {});
     </script>
   </body>
 </html>
