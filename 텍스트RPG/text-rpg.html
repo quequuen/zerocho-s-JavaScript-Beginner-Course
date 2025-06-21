@@ -53,6 +53,12 @@
       const $monsterAtt = document.querySelector("#monster-att");
       const $message = document.querySelector("#messge");
 
+      const monsterList = [
+        { name: "슬라임", hp: 25, att: 10, xp: 10 },
+        { name: "스켈레톤", hp: 50, att: 15, xp: 20 },
+        { name: "마왕", hp: 150, att: 35, xp: 50 },
+      ];
+
       // const heroInitialStat = { 변수명은 최대한 구체적으로
       const hero = {
         name: "",
@@ -94,6 +100,7 @@
           // JSON.parse와 JSON.stringify를 통해 깊은 복사
           monster.maxHp = monster.hp;
           //몬스터의 최대 체력과 몬스터의 현재 체력
+          // 객체를 대입하면 js에서는 **참조**임
           $monsterName = textContent = monster.name;
           $monsterHp.textContent = `HP: ${monster.hp}/${monster.maxHp}`;
           $monsterAtt.textContent = `ATT: ${monster.att}`;
@@ -101,9 +108,9 @@
           const monster1 = SDON.parse(JSON.stringify(monsterList[0]));
           const monster2 = monsterList[0];
           const monster3 = { ...monster[0] }; //얕은 복사 배열은 [...arr]
-          //얕은 복사의 문제점: 할당은 상관 없는데 push 같은 거를 할 때에 원본도 바뀜.
+          //얕은 복사의 문제점: 할당은 상관 없는데 내부에 있는 배열이나 객체를 변경할 때에 원본도 바뀜.
           // 가장 밖에 있는 것은 참조를 끊어주고 안에 있는 것들은 참조를 지킴-> 안에 있는 것들도 참조를 끊고 싶을 때 깊은 복사 사용
-          // 깊은 복사: JSON.parse(JSON.stringify(arr))
+          // 깊은 복사: JSON.parse(JSON.stringify(arr))-> 만능은 아님. 프로토타입에 따라 적용이 안 될 때도 있음
 
           /*
           const a = 'b';
