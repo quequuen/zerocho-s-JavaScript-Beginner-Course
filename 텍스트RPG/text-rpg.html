@@ -53,6 +53,49 @@
       const $monsterAtt = document.querySelector("#monster-att");
       const $message = document.querySelector("#messge");
 
+      // 디자인 패턴(객체지향을 위해 이전에 class 대신 사용하던)
+      // 객체를 찍어내는 공장함수(factory function)
+      /*
+      function creteMoster(name, hp, att, xp) {
+       return name, hp , att , xp};
+      }
+       */
+
+      // 생성자 함수
+      /*
+      function Monster(name, hp, att, xp) {
+        this.name = name;
+        this.hp = hp;
+        this.att = att;
+        this.xp = xp;
+      }
+      const monster1 = new Monster("슬라임", 25, 10, 11);
+      const monster2 = new Monster("슬라임", 25, 10, 10);
+      */
+      //  함수 앞에 new를 붙이면 새로운 객체 리턴
+      // 여기서 this는 새로운 객체(new가 붙는 한에 대해)
+      // 생성자 네이밍 규칙은 무조건 대문자로 시작한다.
+
+      //객체 지향
+      class Monster {
+        constructor(name, hp, att, xp) {
+          this.name = name;
+          this.hp = hp;
+          this.att = att;
+          this.xp = xp;
+        }
+
+        attack(monster) {
+          monster.hp -= this.att;
+          this.hp -= monster.att;
+        }
+
+        heal(monster) {
+          this.hp += 20;
+          this.hp -= monster.att;
+        }
+      }
+
       // const heroInitialStat = { 변수명은 최대한 구체적으로
       const hero = {
         name: "",
@@ -65,7 +108,7 @@
         attack(monster) {
           //= attack: function(monster){ 생략한 것
           // 객체 리터럴일 때는 이런 식으로 생략 가능->둘의 특성은 엄밀히 말하면 다른 부분이 있지만 상관없는 정도
-          monster.hp == this.att;
+          monster.hp -= this.att;
           this.hp -= monster.att;
         },
         heal(monster) {
