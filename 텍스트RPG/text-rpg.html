@@ -56,27 +56,63 @@
       // 디자인 패턴(객체지향을 위해 이전에 class 대신 사용하던)
       // 객체를 찍어내는 공장함수(factory function)
       /*
-      function creteMoster(name, hp, att, xp) {
-       return name, hp , att , xp};
-      }
-       */
+        function creteMoster(name, hp, att, xp) {
+         return name, hp , att , xp};
+        }
+         */
 
       // 생성자 함수
       /*
-      function Monster(name, hp, att, xp) {
-        this.name = name;
-        this.hp = hp;
-        this.att = att;
-        this.xp = xp;
-      }
-      const monster1 = new Monster("슬라임", 25, 10, 11);
-      const monster2 = new Monster("슬라임", 25, 10, 10);
-      */
+        function Monster(name, hp, att, xp) {
+          this.name = name;
+          this.hp = hp;
+          this.att = att;
+          this.xp = xp;
+        }
+        const monster1 = new Monster("슬라임", 25, 10, 11);
+        const monster2 = new Monster("슬라임", 25, 10, 10);
+        */
       //  함수 앞에 new를 붙이면 새로운 객체 리턴
       // 여기서 this는 새로운 객체(new가 붙는 한에 대해)
       // 생성자 네이밍 규칙은 무조건 대문자로 시작한다.
 
       //객체 지향
+
+      class Game {
+        constructor(name) {
+          this.monster = null;
+          this.hero = null;
+          this.monsterList = [
+            { name: "슬라임", hp: 25, att: 10, xp: 10 },
+            { name: "스켈레톤", hp: 50, att: 15, xp: 20 },
+            { name: "마왕", hp: 150, att: 35, xp: 50 },
+          ];
+          this.start(name);
+        }
+        start(name) {
+          console.log(this);
+          $gameMenu.addEventListener("submit", this.onGameMenuInput);
+          $battleMenu.addEventListener("submit", this.onBattleMenuInput);
+          this.changeScreen("game");
+          this.hero = new Hero(this, name);
+          this.updateHeroStat();
+        }
+        changeScreen(screen) {
+          if (screen === "start") {
+            $startScreen.style.display = "block";
+            $gameMenu.style.display = "none";
+            $battleMenu.style.display = "none";
+          } else if (screen === "game") {
+            $startScreen.style.display = "none";
+            $gameMenu.style.display = "block";
+            $battleMenu.style.display = "none";
+          } else if (screen === "battle") {
+            $startScreen.style.display = "none";
+            $gameMenu.style.display = "none";
+            $battleMenu.style.display = "block";
+          }
+        }
+      }
       class Monster {
         constructor(name, hp, att, xp) {
           this.name = name;
@@ -95,6 +131,30 @@
           this.hp -= monster.att;
         }
       }
+
+      class Hero {
+        constructor(game, name) {
+          this.game = game;
+          this.name = name;
+          this.lev = 1;
+          this.maxHp = 100;
+          this.hp = 100;
+          this.xp = 0;
+          this.att = 10;
+        }
+        attack(target) {
+          target.hp -= this.att;
+        }
+        heal(monster) {
+          this.hp += 10;
+          this.hp -= monster.att;
+        }
+      }
+
+      // const game1 = new Game();
+      // const game2 = new Game();
+
+      // const hero1 = new Hero(game1,name);
 
       // const heroInitialStat = { 변수명은 최대한 구체적으로
       const hero = {
@@ -120,14 +180,16 @@
         // document의 부모:window(브라우저 전체를 담당하는 객체 다른 프로젝트에서 path 가져왔던 거 생각할 것!)
         // https://www.zerocho.com/category/JavaScript/post/5b0645cc7e3e36001bf676eb(this 관련 게시물)
       };
-      let monster = null;
 
-      const monsterList = [
-        { name: "슬라임", hp: 25, att: 10, xp: 10 },
-        { name: "스켈레톤", hp: 50, att: 15, xp: 20 },
-        { name: "마왕", hp: 150, att: 35, xp: 50 },
-      ];
+      // let monster = null;
 
+      // const monsterList = [
+      //   { name: "슬라임", hp: 25, att: 10, xp: 10 },
+      //   { name: "스켈레톤", hp: 50, att: 15, xp: 20 },
+      //   { name: "마왕", hp: 150, att: 35, xp: 50 },
+      // ];
+
+      let game = null;
       $startScreen.addEventListener("submit", (event) => {
         event.preventDefault();
         const name = event.target["name-input"].value;
