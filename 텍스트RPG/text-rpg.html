@@ -319,62 +319,63 @@
         hero.name = name;
       });
 
-      $gameMenu.addEventListener("submit", (event) => {
-        event.preventDefault();
-        const input = event.target["menu-input"].value; // input의 value는 type="number"가 아닌 이상 text
-        //.valueAsNumber를 붙이면 숫자인 인풋만 가져옴
-        //event 대상이 form이기 때문에 배열로 menu-input이 id인 애를 가져옴
-        if (input === "1") {
-          //모험
-          $gameMenu.style.display = "none";
-          $battleMenu.style.display = "block";
-          const monster = JSON.parse(
-            JSON.stringify(
-              monsterList[Math.floor(Math.random() * monsterList.length)]
-            )
-          );
-          // JSON.parse와 JSON.stringify를 통해 깊은 복사
-          monster.maxHp = monster.hp;
-          //몬스터의 최대 체력과 몬스터의 현재 체력
-          // 객체를 대입하면 js에서는 **참조**임
-          $monsterName.textContent = monster.name;
-          $monsterHp.textContent = `HP: ${monster.hp}/${monster.maxHp}`;
-          $monsterAtt.textContent = `ATT: ${monster.att}`;
+      // class로 빼는 내용
+      // $gameMenu.addEventListener("submit", (event) => {
+      //   event.preventDefault();
+      //   const input = event.target["menu-input"].value; // input의 value는 type="number"가 아닌 이상 text
+      //   //.valueAsNumber를 붙이면 숫자인 인풋만 가져옴
+      //   //event 대상이 form이기 때문에 배열로 menu-input이 id인 애를 가져옴
+      //   if (input === "1") {
+      //     //모험
+      //     $gameMenu.style.display = "none";
+      //     $battleMenu.style.display = "block";
+      //     const monster = JSON.parse(
+      //       JSON.stringify(
+      //         monsterList[Math.floor(Math.random() * monsterList.length)]
+      //       )
+      //     );
+      //     // JSON.parse와 JSON.stringify를 통해 깊은 복사
+      //     monster.maxHp = monster.hp;
+      //     //몬스터의 최대 체력과 몬스터의 현재 체력
+      //     // 객체를 대입하면 js에서는 **참조**임
+      //     $monsterName.textContent = monster.name;
+      //     $monsterHp.textContent = `HP: ${monster.hp}/${monster.maxHp}`;
+      //     $monsterAtt.textContent = `ATT: ${monster.att}`;
 
-          const monster1 = JSON.parse(JSON.stringify(monsterList[0]));
-          const monster2 = monsterList[0];
-          const monster3 = { ...monster[0] }; //얕은 복사 배열은 [...arr]
-          //얕은 복사의 문제점: 할당은 상관 없는데 내부에 있는 배열이나 객체를 변경할 때에 원본도 바뀜.
-          // 가장 밖에 있는 것은 참조를 끊어주고 안에 있는 것들은 참조를 지킴-> 안에 있는 것들도 참조를 끊고 싶을 때 깊은 복사 사용
-          // 깊은 복사: JSON.parse(JSON.stringify(arr))-> 만능은 아님. 프로토타입에 따라 적용이 안 될 때도 있음
+      //     const monster1 = JSON.parse(JSON.stringify(monsterList[0]));
+      //     const monster2 = monsterList[0];
+      //     const monster3 = { ...monster[0] }; //얕은 복사 배열은 [...arr]
+      //     //얕은 복사의 문제점: 할당은 상관 없는데 내부에 있는 배열이나 객체를 변경할 때에 원본도 바뀜.
+      //     // 가장 밖에 있는 것은 참조를 끊어주고 안에 있는 것들은 참조를 지킴-> 안에 있는 것들도 참조를 끊고 싶을 때 깊은 복사 사용
+      //     // 깊은 복사: JSON.parse(JSON.stringify(arr))-> 만능은 아님. 프로토타입에 따라 적용이 안 될 때도 있음
 
-          monster1.name = "새 몬스터";
-          monster2.name = "새 몬스터";
-          console.log(monsterList[0] === monster1); //false, 깊은 복사(객체 자체가 아닌 객체의 데이터만 가져옴)
-          console.log(monsterList[0] === monster2); //true 얕은 복사(참조)
-        } else if (input === "2") {
-          //휴식
-        } else if (input === "3") {
-          //종료
-        }
-      });
+      //     monster1.name = "새 몬스터";
+      //     monster2.name = "새 몬스터";
+      //     console.log(monsterList[0] === monster1); //false, 깊은 복사(객체 자체가 아닌 객체의 데이터만 가져옴)
+      //     console.log(monsterList[0] === monster2); //true 얕은 복사(참조)
+      //   } else if (input === "2") {
+      //     //휴식
+      //   } else if (input === "3") {
+      //     //종료
+      //   }
+      // });
 
-      $battleMenu.addEventListener("submit", (event) => {
-        e.preventDefault;
-        const input = event.target["battle-input"].value;
-        if (input === "1") {
-          //공격
-          console.log("공격");
-          heor.attack(monster);
-          monster.attack(hero);
-          $heroHp.textContent = `HP: ${hero.hp}/${hero.maxHp}`;
-          $monsterHp.textContent = `HP: ${monster.hp}/${monster.maxHp}`;
-          $message.textContent = `${hero.att}의 데미지를 주고, ${monster.att}의 데미지를 받았다.`;
-        } else if (input === "2") {
-          //회복
-        } else if (input === "3") {
-          //도망
-        }
+      // $battleMenu.addEventListener("submit", (event) => {
+      //   e.preventDefault;
+      //   const input = event.target["battle-input"].value;
+      //   if (input === "1") {
+      //     //공격
+      //     console.log("공격");
+      //     heor.attack(monster);
+      //     monster.attack(hero);
+      //     $heroHp.textContent = `HP: ${hero.hp}/${hero.maxHp}`;
+      //     $monsterHp.textContent = `HP: ${monster.hp}/${monster.maxHp}`;
+      //     $message.textContent = `${hero.att}의 데미지를 주고, ${monster.att}의 데미지를 받았다.`;
+      //   } else if (input === "2") {
+      //     //회복
+      //   } else if (input === "3") {
+      //     //도망
+      //   }
       });
     </script>
   </body>
