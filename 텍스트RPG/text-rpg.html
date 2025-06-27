@@ -124,6 +124,7 @@
               Math.random() * this.monsterList.length
             );
             const randomMonster = this.monsterList[randomIndex];
+            console.log(randomMonster);
             this.monster = new Monster(
               this,
               randomMonster.name,
@@ -205,6 +206,7 @@
         }
         updateMonsterStat() {
           const { monster } = this;
+          console.log(monster);
           if (monster === null) {
             $monsterName.textContent = "";
             $monsterHp.textContent = "";
@@ -229,23 +231,39 @@
           game = null;
         }
       }
+
+      class Unit {
+        constructor(game, name, hp, att, xp) {
+          this.game = game;
+          this.name = name;
+          this.maxHp = hp;
+          this.hp = hp;
+          this.xp = xp;
+          this.att = att;
+        }
+
+        attack(target) {
+          target.hp -= this.att;
+        }
+      }
+
       class Monster {
-        constructor(name, hp, att, xp) {
+        constructor(game, name, hp, att, xp) {
           this.name = name;
           this.hp = hp;
           this.att = att;
           this.xp = xp;
         }
 
-        attack(monster) {
-          monster.hp -= this.att;
-          this.hp -= monster.att;
-        }
+        // attack(monster) {
+        //   monster.hp -= this.att;
+        //   this.hp -= monster.att;
+        // }
 
-        heal(monster) {
-          this.hp += 20;
-          this.hp -= monster.att;
-        }
+        // heal(monster) {
+        //   this.hp += 20;
+        //   this.hp -= monster.att;
+        // }
       }
 
       class Hero {
@@ -285,29 +303,29 @@
       // const hero1 = new Hero(game1,name);
 
       // const heroInitialStat = { 변수명은 최대한 구체적으로
-      const hero = {
-        name: "",
-        lev: 1,
-        maxHp: 100,
-        hp: 100,
-        xp: 0,
-        maxXp: 0,
-        att: 10,
-        attack(monster) {
-          //= attack: function(monster){ 생략한 것
-          // 객체 리터럴일 때는 이런 식으로 생략 가능->둘의 특성은 엄밀히 말하면 다른 부분이 있지만 상관없는 정도
-          monster.hp -= this.att;
-          this.hp -= monster.att;
-        },
-        heal(monster) {
-          this.hp += 20;
-          this.hp -= monster.att;
-        },
-        // this는 화살표 함수가 되어버리면 this의 주체가 바뀌어버리기 때문에 화살표 함수가 아닌 function으로 써야 함
-        // 화살표 함수를 사용할 시 this의 주체는 윈도우가 되어버림
-        // document의 부모:window(브라우저 전체를 담당하는 객체 다른 프로젝트에서 path 가져왔던 거 생각할 것!)
-        // https://www.zerocho.com/category/JavaScript/post/5b0645cc7e3e36001bf676eb(this 관련 게시물)
-      };
+      // const hero = {
+      //   name: "",
+      //   lev: 1,
+      //   maxHp: 100,
+      //   hp: 100,
+      //   xp: 0,
+      //   maxXp: 0,
+      //   att: 10,
+      //   attack(monster) {
+      //     //= attack: function(monster){ 생략한 것
+      //     // 객체 리터럴일 때는 이런 식으로 생략 가능->둘의 특성은 엄밀히 말하면 다른 부분이 있지만 상관없는 정도
+      //     monster.hp -= this.att;
+      //     this.hp -= monster.att;
+      //   },
+      //   heal(monster) {
+      //     this.hp += 20;
+      //     this.hp -= monster.att;
+      //   },
+      //   // this는 화살표 함수가 되어버리면 this의 주체가 바뀌어버리기 때문에 화살표 함수가 아닌 function으로 써야 함
+      //   // 화살표 함수를 사용할 시 this의 주체는 윈도우가 되어버림
+      //   // document의 부모:window(브라우저 전체를 담당하는 객체 다른 프로젝트에서 path 가져왔던 거 생각할 것!)
+      //   // https://www.zerocho.com/category/JavaScript/post/5b0645cc7e3e36001bf676eb(this 관련 게시물)
+      // };
 
       // let monster = null;
 
