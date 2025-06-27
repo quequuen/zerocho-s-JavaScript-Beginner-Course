@@ -51,7 +51,7 @@
       const $monsterName = document.querySelector("#monster-name");
       const $monsterHp = document.querySelector("#monster-hp");
       const $monsterAtt = document.querySelector("#monster-att");
-      const $message = document.querySelector("#messge");
+      const $message = document.querySelector("#message");
 
       // 디자인 패턴(객체지향을 위해 이전에 class 대신 사용하던)
       // 객체를 찍어내는 공장함수(factory function)
@@ -233,6 +233,7 @@
       }
 
       class Unit {
+        // Hero, Monster 에서 공통으로 쓰이는 constructor
         constructor(game, name, hp, att, xp) {
           this.game = game;
           this.name = name;
@@ -247,38 +248,58 @@
         }
       }
 
-      class Monster {
+      //js는 다중 상속 x, 하나의 클래스는 하나의 클래스만을 상속 받는다.
+      class Monster extends Unit {
+        // extends 하기 전
+        // constructor(game, name, hp, att, xp) {
+        //   this.game = gmae;
+        //   this.name = name;
+        //   this.hp = hp;
+        //   this.att = att;
+        //   this.xp = xp;
+        // }
+        // extends 한 후
         constructor(game, name, hp, att, xp) {
-          this.name = name;
-          this.hp = hp;
-          this.att = att;
-          this.xp = xp;
+          super(game, name, hp, att, xp);
         }
-
         // attack(monster) {
         //   monster.hp -= this.att;
         //   this.hp -= monster.att;
         // }
-
-        // heal(monster) {
-        //   this.hp += 20;
-        //   this.hp -= monster.att;
-        // }
+        heal(monster) {
+          this.hp += 20;
+          this.hp -= monster.att;
+        }
+        // 부모클래스(Unit)의 생성자 호출
       }
 
-      class Hero {
+      class BossMonster {
+        constructor(game, name, hp, att, xp) {}
+        attack(target) {}
+        skill(target) {}
+      }
+
+      class Hero extends Unit {
         constructor(game, name) {
-          this.game = game;
-          this.name = name;
+          super(game, name, 100, 10, 0);
+          // this.game = game;
+          // this.name = name;
           this.lev = 1;
           this.maxHp = 100;
-          this.hp = 100;
-          this.xp = 0;
-          this.att = 10;
+          // this.hp = 100;
+          // this.xp = 0;
+          // this.att = 10;
         }
-        attack(target) {
-          target.hp -= this.att;
-        }
+        // Unit이 가지고 있는 attack이 있기 때문에 Hero에서 안 씀
+        // attack(target) {
+        //   target.hp -= this.att;
+        // }
+
+        // Unit과 비슷하지만 조금 다른 함수를 쓸 때
+        // attack(target) {
+        //   super.attack(target);
+        //   console.log("영웅이 공격");
+        // }
         heal(monster) {
           this.hp += 10;
           this.hp -= monster.att;
