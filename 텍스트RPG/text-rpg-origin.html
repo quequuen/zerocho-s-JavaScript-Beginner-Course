@@ -148,7 +148,13 @@
             // 회복
             const { hero, monster } = this;
             hero.hp = Math.min(hero.maxHp, hero.hp + 20);
-            monster.attack(hero);
+            // 회복을 했을 때는 현재 hp에서 20을 더 하는데 만약 maxHp를 넘어가면 maxHp 반환
+            // 밑에 내용과 같은 내용
+            // hero.hp += 10;
+            // if(hero.hp>hero.maxHp){
+            // hero.hp = hero.maxHp
+            // }
+            monster.attack(hero); //회복한 뒤 바로 어택당함
             this.showMessage("체력을 조금 회복했다!");
             this.updateHeroStat();
           } else if (input === "3") {
