@@ -80,10 +80,26 @@
         return card;
       }
 
+      function onClickCard() {
+        this.classList.toggle("flipped");
+        clicked.push(this);
+        if (clicked.length !== 2) {
+          return;
+        }
+        const firstBackColor =
+          clicked[0].querySelector(".card-back").style.backgroundColor;
+        const secondBackColor =
+          clicked[1].querySelector(".card-back").style.backgroundColor;
+        if (firstBackColor === secondBackColor) {
+          return;
+        }
+      }
+
       function startGame() {
         shuffle();
         for (let i = 0; i < total; i += 1) {
           const card = createCard(i);
+          card.addEventListener("click", onClickCard);
           $wrapper.appendChild(card);
         }
 
