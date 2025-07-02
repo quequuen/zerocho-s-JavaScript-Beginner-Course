@@ -54,6 +54,8 @@
       let colorCopy = colors.concat(colors);
       // 두 쌍으로 만들거기 때문에 concat
       let shuffled = [];
+      let completed = [];
+      let clicked = [];
 
       function shuffle() {
         for (let i = 0; colorCopy.length > 0; i += 1) {
@@ -91,8 +93,23 @@
         const secondBackColor =
           clicked[1].querySelector(".card-back").style.backgroundColor;
         if (firstBackColor === secondBackColor) {
+          //두 카드가 같은 카드면
+          completed.push(clicked[0]);
+          completed.push(clicked[1]);
+          clicked = [];
+          //==   completed = completed.concat(clicked);
+          if (completed.length !== total) {
+            return;
+          }
+          alert(`축하합니다!`);
           return;
         }
+        //다른 카드면
+        setTimeout(() => {
+          clicked[0].classList.remove("flipped");
+          clicked[1].classList.remove("flipped");
+          clicked = [];
+        }, 1000);
       }
 
       function startGame() {
