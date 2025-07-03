@@ -48,6 +48,7 @@
   <body>
     <div id="wrapper"></div>
     <script>
+      //기획은 바보에게 보여주는 것처럼 하고, 보안은 천재에게 보여주는 것처럼 해라
       const $wrapper = document.querySelector("#wrapper");
       const total = 12;
       const colors = ["red", "orange", "yellow", "green", "white", "pink"];
@@ -56,6 +57,7 @@
       let shuffled = [];
       let completed = [];
       let clicked = [];
+      let clickable = false;
 
       function shuffle() {
         for (let i = 0; colorCopy.length > 0; i += 1) {
@@ -83,6 +85,10 @@
       }
 
       function onClickCard() {
+        //clickable=false거나 이미 완성된 카드를 클릭하거나 방금 클릭한 카드를 연달아 클릭하는 것 막기
+        if (!clickable || completed.includes(this) || clicked[0] === this) {
+          return;
+        }
         this.classList.toggle("flipped");
         clicked.push(this);
         if (clicked.length !== 2) {
@@ -101,7 +107,9 @@
           if (completed.length !== total) {
             return;
           }
-          alert(`축하합니다!`);
+          setTimeout(() => {
+            alert(`축하합니다!`);
+          }, 1000);
           return;
         }
         //다른 카드면
@@ -113,6 +121,7 @@
       }
 
       function startGame() {
+        clickable = false;
         shuffle();
         for (let i = 0; i < total; i += 1) {
           const card = createCard(i);
@@ -127,13 +136,25 @@
           }, 1000 + 100 * index);
         });
         setTimeout(() => {
+          //카드 감추기
           document.querySelectorAll(".card").forEach((card) => {
             card.classList.remove("flipped");
           });
+          clickable = true;
         }, 5000);
       }
 
       startGame();
+
+      function resetGame() {
+        $wrapper.innderHTML = "";
+        colorCopy.colors.concat(colors);
+        //재사용 하기 때문에 colors가 원본이 바뀌는 걸 쓰면 안됨(ex) push, pop, unshift, shift, splice, sort 등)
+        //원본을 안 바꾸는 애들: concat, slice, map, filter, every, forEach, some, find, findIndex, includes, indexOf 등
+        shuffled = [];
+        completed = [];
+        startGame();
+      }
     </script>
   </body>
 </html>
