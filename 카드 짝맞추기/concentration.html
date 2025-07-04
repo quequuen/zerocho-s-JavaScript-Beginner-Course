@@ -104,6 +104,7 @@
           completed.push(clicked[0]);
           completed.push(clicked[1]);
           clicked = [];
+
           //==   completed = completed.concat(clicked);
           if (completed.length !== total) {
             return;
@@ -113,11 +114,13 @@
           }, 1000);
           return;
         }
+        clickable = false;
         //다른 카드면
         setTimeout(() => {
           clicked[0].classList.remove("flipped");
           clicked[1].classList.remove("flipped");
           clicked = [];
+          clickable = true;
         }, 1000);
       }
 
