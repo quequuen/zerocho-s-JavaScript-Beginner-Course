@@ -104,6 +104,11 @@
         mines.includes(data[rowIndex +1]?.[cellIndex - 1])&& i++;
         mines.includes(data[rowIndex +1]?.[cellIndex])&& i++;
         mines.includes(data[rowIndex +1]?.[cellIndex + 1])&& i++;
+        // "a"||"b"->"a" 
+        // "a"&&"b"->"b"
+        //  0??""->0 null,undefined가 아니면 앞
+        // null??""->"" null, undefined면 뒤
+
         return i;
       }
 
@@ -157,6 +162,10 @@
           target.className = "opened";
           data[rowIndex][cellIndex] = count;
         } else if (cellData === CODE.MINE) {  //지뢰 칸이면
+          target.textContent = '펑';
+          target.className = 'opened';
+          $tbody.removeEventListener('contextmenu',onRightClick);
+          $tbody.removeEventListener('click',onLeftClick);
         } //물음표 또는 깃발 칸이면 아무 동작도 하지 않음
       }
 
