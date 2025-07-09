@@ -112,6 +112,37 @@
         return i;
       }
 
+      function open(rowIndex, cellIndex){
+        const target = $tbody.children[rowIndex]?.children[cellIndex];  //
+        if(!target){
+          return;
+        }
+        const count = countMine(rowIndex, cellIndex);
+        target.textContent = count || '';
+        target.className = 'opened';
+        data[rowIndex][cellIndex] = count;
+        return count;
+      }
+
+
+      function openArounds(rI,cI){  //주변 칸이 0이라면 같이 열기
+        setTimeout(()=>{  //재귀를 이용해 한번에 호출스택이 너무 많이 쌓이면 호출 스택이 터져버리기 때문에 Maximum call stack size exceeded
+          // setTimeout을 이용해 호출스택의 몫을 백그라운드와 태스크큐로 나눔
+          const count = open(rI, cI);
+          if(count ===0){
+            openArounds(rI -1, cI-1);
+            openArounds(rI -1, cI);
+            openArounds(rI -1, cI+1);
+            openArounds(rI, cI-1);
+            openArounds(rI, cI+1);
+            openArounds(rI +1, cI-1);
+            openArounds(rI +1, cI);
+            openArounds(rI +1, cI+1);
+          }
+        },0);
+        
+      }
+
       function onRightClick(event) {
         event.preventDefault();
         const target = event.target;
@@ -156,11 +187,10 @@
         const rowIndex = target.parentNode.rowIndex;
         const cellIndex = target.cellIndex;
         const cellData = data[rowIndex][cellIndex];
+        
         if (cellData === CODE.NORMAL) { //닫힌 칸이라면
-          const count = countMine(rowIndex, cellIndex);
-          target.textContent = count || "";
-          target.className = "opened";
-          data[rowIndex][cellIndex] = count;
+          console.log('닫힘');
+          openArounds(rowIndex, cellIndex);
         } else if (cellData === CODE.MINE) {  //지뢰 칸이면
           target.textContent = '펑';
           target.className = 'opened';
