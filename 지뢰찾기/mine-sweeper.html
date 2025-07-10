@@ -181,6 +181,45 @@
         }, 0);
       }
 
+      let normalCellFound = false;
+      let searched;
+      let firstClick = true;
+
+      function transferMine(rI, cI) {
+        //첫번째 칸을 눌렀을 때 해당 칸이 지뢰일 시 다른 칸으로 옮기는 함수
+        if (normalCellFound) return; // 이미 빈 칸을 찾았으면 종료
+        if (rI < 0 || rI >= row || cI < 0 || cI >= cell) return; //-1 값(undefined)을 막아주는 코드
+        if (searched[rI][cI]) return; //이미 찾은 칸이면 종료
+        if (isNormal(data[rI]?.[cI])) {
+          //빈칸인 경우
+          normalCellFound = true;
+          data[rI][cI] = CODE.MINE;
+        } else {
+          //지뢰 칸인 경우 8방향 탐색
+          searched[rI][cI] = true; //현재 배열과 같은 구조의 배열을 만들고 이미 찾아본 칸이면 막음
+          transferMine(rI - 1, cI - 1);
+          transferMine(rI - 1, cI);
+          transferMine(rI - 1, cI + 1);
+          transferMine(rI, cI - 1);
+          transferMine(rI, cI + 1);
+          transferMine(rI + 1, cI - 1);
+          transferMine(rI + 1, cI);
+          transferMine(rI + 1, cI + 1);
+        }
+      }
+
+      function showMine() {
+        //지뢰칸을 누르고 게임이 종료되었을 때 지뢰의 위치를 보여주는 코드
+        const mines = [CODE.MINE, CODE.QUESTION_MINE, CODE.FLAG_MINE];
+        data.forEach((row, rowIndex) => {
+          row.forEach((cell, cellIndex) => {
+            if (mines.includes(cell)) {
+              $tbody.children[rowindex].children[cellindex].textContent = "X";
+            }
+          });
+        });
+      }
+
       function onRightClick(event) {
         event.preventDefault();
         const target = event.target;
@@ -224,14 +263,27 @@
         const target = event.target;
         const rowIndex = target.parentNode.rowIndex;
         const cellIndex = target.cellIndex;
-        const cellData = data[rowIndex][cellIndex];
+        let cellData = data[rowIndex][cellIndex];
+
+        if (firstClick) {
+          firstClick = false;
+          searched = Array(row)
+            .fill()
+            .map(() => []);
+          if (cellData === CODE.MINE) {
+            //첫 클릭이 지뢰면
+            transferMine(rowIndex, cellIndex); //지뢰 옮기기
+            data[rowIndex][cellIndex] = CODE.NORMAL; //지금 칸을 빈칸으로
+            cellData = CODE.NORMAL; //원시값에 대한 할당은 참조가 아닌 값 할당이기 때문에 data[rowIndex][cellIndex]과 같게
+            //cellData에도 NORMAL 값을 또 넣어줌
+          }
+        }
 
         if (cellData === CODE.NORMAL) {
-          //닫힌 칸이라면
-          console.log("닫힘");
           openArounds(rowIndex, cellIndex);
         } else if (cellData === CODE.MINE) {
           //지뢰 칸이면
+          showMine();
           target.textContent = "펑";
           target.className = "opened";
           clearInterval(interval);
