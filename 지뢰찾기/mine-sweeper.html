@@ -29,25 +29,26 @@
 
   <body>
     <form id="form">
-      <!-- <input placeholder="가로 줄" id="row" size="5" />
+      <input placeholder="가로 줄" id="row" size="5" />
       <input placeholder="세로 줄" id="cell" size="5" />
       <input placeholder="지뢰" id="mine" size="5" />
       <button>생성</button>
-    </form> -->
+    </form>
     <div id="timer">0초</div>
     <table id="table">
       <tbody></tbody>
     </table>
     <div id="result"></div>
     <script>
+      const $form = document.querySelector("#form");
       const $timer = document.querySelector("#timer");
       const $tbody = document.querySelector("#table tbody");
       const $result = document.querySelector("#result");
       //이런 프로그램은 처음은 우선 간단하게 만드는 게 나음
       //점진적으로 발전해 나가는 게 좋음
-      const row = 10; //줄
-      const cell = 10; //칸
-      const mine = 10;
+      let row; //줄
+      let cell; //칸
+      let mine;
       const CODE = {
         NORMAL: -1,
         QUESTION: -2,
@@ -58,13 +59,29 @@
         OPENED: 0, //0 이상이면 다 모두 열린 칸
       };
       let data;
-      let openCount =0;
-      let startTime = new Date();
-      const interval = setInterval(()=>{
-        const time = Math.floor((new Date() - startTime)/1000);
-        $timer.textContent = `${time}초`;
-      },1000);
+      let openCount;
+      let startTime;
+      let interval;
+      const dev = false; // 개발모드 확인용 플래그 변수
       //데이터를 먼저 바꾸고 나서 데이터에 따라 화면을 구성, 수정하는 게 좋음
+
+      function onSubmit(event) {
+        event.preventDefault();
+        //form의 기본 동작은 새로고침이기 때문에 막아야 함.
+        row = parseInt(event.target.row.value);
+        cell = parseInt(event.target.cell.value);
+        mine = parseInt(event.target.mine.value);
+        openCount = 0;
+        $tbody.innerHTML = "";
+        drawTable();
+        startTime = new Date();
+        interval = setInterval(() => {
+          const time = Math.floor((new Date() - startTime) / 1000);
+          $timer.textContent = `${time}초`;
+        }, 1000);
+      }
+
+      $form.addEventListener("submit", onSubmit);
 
       function plantMine() {
         const candidate = Array(row * cell)
@@ -100,18 +117,18 @@
         return data;
       }
 
-      function countMine(rowIndex, cellIndex){
+      function countMine(rowIndex, cellIndex) {
         const mines = [CODE.MINE, CODE.QUESTION_MINE, CODE.FLAG_MINE];
         let i = 0;
-        mines.includes(data[rowIndex -1]?.[cellIndex - 1])&& i++;
-        mines.includes(data[rowIndex -1]?.[cellIndex])&& i++;
-        mines.includes(data[rowIndex -1]?.[cellIndex + 1])&& i++;
-        mines.includes(data[rowIndex][cellIndex - 1])&& i++;
-        mines.includes(data[rowIndex][cellIndex + 1])&& i++;
-        mines.includes(data[rowIndex +1]?.[cellIndex - 1])&& i++;
-        mines.includes(data[rowIndex +1]?.[cellIndex])&& i++;
-        mines.includes(data[rowIndex +1]?.[cellIndex + 1])&& i++;
-        // "a"||"b"->"a" 
+        mines.includes(data[rowIndex - 1]?.[cellIndex - 1]) && i++;
+        mines.includes(data[rowIndex - 1]?.[cellIndex]) && i++;
+        mines.includes(data[rowIndex - 1]?.[cellIndex + 1]) && i++;
+        mines.includes(data[rowIndex][cellIndex - 1]) && i++;
+        mines.includes(data[rowIndex][cellIndex + 1]) && i++;
+        mines.includes(data[rowIndex + 1]?.[cellIndex - 1]) && i++;
+        mines.includes(data[rowIndex + 1]?.[cellIndex]) && i++;
+        mines.includes(data[rowIndex + 1]?.[cellIndex + 1]) && i++;
+        // "a"||"b"->"a"
         // "a"&&"b"->"b"
         //  0??""->0 null,undefined가 아니면 앞
         // null??""->"" null, undefined면 뒤
@@ -119,48 +136,49 @@
         return i;
       }
 
-      function open(rowIndex, cellIndex){
-        if(data[rowIndex]?.[cellIndex]>=CODE.OPENED) return;
-        const target = $tbody.children[rowIndex]?.children[cellIndex];  //
-        if(!target){
+      function open(rowIndex, cellIndex) {
+        if (data[rowIndex]?.[cellIndex] >= CODE.OPENED) return;
+        const target = $tbody.children[rowIndex]?.children[cellIndex]; //
+        if (!target) {
           return;
         }
         const count = countMine(rowIndex, cellIndex);
-        target.textContent = count || '';
-        target.className = 'opened';
+        target.textContent = count || "";
+        target.className = "opened";
         data[rowIndex][cellIndex] = count;
         openCount++;
-        // console.log(openCount);    
+        // console.log(openCount);
         // 콘솔에 몇개 열었는지 확인용
-        if(openCount === row* cell -mine){
-          const time = (new Date()-startTime)/1000; 
+        if (openCount === row * cell - mine) {
+          const time = (new Date() - startTime) / 1000;
           clearInterval(interval);
-          $tbody.removeEventListener('contextmenu',onRightClick);
-          $tbody.removeEventListener('click',onLeftClick);
-          setTimeout(()=>{  //화면이 그려지는 시간을 주는 것
+          $tbody.removeEventListener("contextmenu", onRightClick);
+          $tbody.removeEventListener("click", onLeftClick);
+          setTimeout(() => {
+            //화면이 그려지는 시간을 주는 것
             alert(`승리했습니다! ${time}초가 걸렸습니다.`);
-          },500);
+          }, 500);
         }
         return count;
       }
 
-
-      function openArounds(rI,cI){  //주변 칸이 0이라면 같이 열기
-        setTimeout(()=>{  //재귀를 이용해 한번에 호출스택이 너무 많이 쌓이면 호출 스택이 터져버리기 때문에 Maximum call stack size exceeded
+      function openArounds(rI, cI) {
+        //주변 칸이 0이라면 같이 열기
+        setTimeout(() => {
+          //재귀를 이용해 한번에 호출스택이 너무 많이 쌓이면 호출 스택이 터져버리기 때문에 Maximum call stack size exceeded
           // setTimeout을 이용해 호출스택의 몫을 백그라운드와 태스크큐로 나눔
           const count = open(rI, cI);
-          if(count ===0){
-            openArounds(rI -1, cI-1);
-            openArounds(rI -1, cI);
-            openArounds(rI -1, cI+1);
-            openArounds(rI, cI-1);
-            openArounds(rI, cI+1);
-            openArounds(rI +1, cI-1);
-            openArounds(rI +1, cI);
-            openArounds(rI +1, cI+1);
+          if (count === 0) {
+            openArounds(rI - 1, cI - 1);
+            openArounds(rI - 1, cI);
+            openArounds(rI - 1, cI + 1);
+            openArounds(rI, cI - 1);
+            openArounds(rI, cI + 1);
+            openArounds(rI + 1, cI - 1);
+            openArounds(rI + 1, cI);
+            openArounds(rI + 1, cI + 1);
           }
-        },0);
-        
+        }, 0);
       }
 
       function onRightClick(event) {
@@ -207,18 +225,19 @@
         const rowIndex = target.parentNode.rowIndex;
         const cellIndex = target.cellIndex;
         const cellData = data[rowIndex][cellIndex];
-        
-        if (cellData === CODE.NORMAL) { //닫힌 칸이라면
-          console.log('닫힘');
+
+        if (cellData === CODE.NORMAL) {
+          //닫힌 칸이라면
+          console.log("닫힘");
           openArounds(rowIndex, cellIndex);
-        } else if (cellData === CODE.MINE) {  //지뢰 칸이면
-          target.textContent = '펑';
-          target.className = 'opened';
-          clearInterval(interval); 
+        } else if (cellData === CODE.MINE) {
+          //지뢰 칸이면
+          target.textContent = "펑";
+          target.className = "opened";
+          clearInterval(interval);
           //Interval을 쓰면 클리어 하는 거 잊지 말자!
-          $tbody.removeEventListener('contextmenu',onRightClick);
-          $tbody.removeEventListener('click',onLeftClick);
-    
+          $tbody.removeEventListener("contextmenu", onRightClick);
+          $tbody.removeEventListener("click", onLeftClick);
         } //물음표 또는 깃발 칸이면 아무 동작도 하지 않음
       }
 
@@ -229,7 +248,8 @@
           row.forEach((cell) => {
             const $td = document.createElement("td");
             if (cell === CODE.MINE) {
-              $td.textContent = "X"; // 개발 편의를 위해
+              // $td.textContent = "X"; // 개발 편의를 위해
+              dev && ($td.textContent = "X"); //보통 현업에서 쓰는 방법
             }
             $tr.append($td);
           });
@@ -241,7 +261,7 @@
         });
       }
 
-      drawTable();
+      // drawTable();
     </script>
   </body>
 </html>
