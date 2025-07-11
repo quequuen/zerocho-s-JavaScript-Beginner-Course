@@ -44,8 +44,9 @@
       const $timer = document.querySelector("#timer");
       const $tbody = document.querySelector("#table tbody");
       const $result = document.querySelector("#result");
-      //이런 프로그램은 처음은 우선 간단하게 만드는 게 나음
+      //이런 프로그램은 처음은 우선 간단하게 만들고
       //점진적으로 발전해 나가는 게 좋음
+      //예를 들어 처음엔 row, cell의 값을 먼저 10으로 지정하던지
       let row; //줄
       let cell; //칸
       let mine;
@@ -53,18 +54,19 @@
         NORMAL: -1,
         QUESTION: -2,
         FLAG: -3,
-        QUESTION_MINE: -4,
-        FLAG_MINE: -5,
-        MINE: -6,
+        QUESTION_MINE: -4, //물음표 지뢰
+        FLAG_MINE: -5, //깃발 지뢰
+        MINE: -6, //지뢰
         OPENED: 0, //0 이상이면 다 모두 열린 칸
       };
       let data;
-      let openCount;
-      let startTime;
-      let interval;
+      let openCount; //openAround를 통해 몇 칸을 열었는지 체크
+      let startTime; //시작 시간
+      let interval; //인터벌 저장 변수
       const dev = false; // 개발모드 확인용 플래그 변수
       //데이터를 먼저 바꾸고 나서 데이터에 따라 화면을 구성, 수정하는 게 좋음
 
+      //처음 폼의 버튼을 누를 시, 초기화와 함께 값 저장
       function onSubmit(event) {
         event.preventDefault();
         //form의 기본 동작은 새로고침이기 때문에 막아야 함.
@@ -86,9 +88,7 @@
       function plantMine() {
         const candidate = Array(row * cell)
           .fill()
-          .map((arr, i) => {
-            return i;
-          });
+          .map((_, i) => i);
         const shuffle = [];
         while (candidate.length > row * cell - mine) {
           const chosen = candidate.splice(
@@ -105,19 +105,20 @@
           data.push(rowData);
           for (let j = 0; j < cell; j++) {
             //2차원 배열에 빠질 수 없는 2중 반복문
-            rowData.push(CODE.NORMAL);
+            rowData.push(CODE.NORMAL); //-1로 일단 가득 채움
           }
         }
 
         for (let k = 0; k < shuffle.length; k++) {
           const ver = Math.floor(shuffle[k] / cell); // 열
           const hor = shuffle[k] % cell; // 행
-          data[ver][hor] = CODE.MINE;
+          data[ver][hor] = CODE.MINE; //난수로 뽑은 칸들에 지뢰 심어줌
         }
         return data;
       }
 
       function countMine(rowIndex, cellIndex) {
+        //주변의 지뢰들을 카운트
         const mines = [CODE.MINE, CODE.QUESTION_MINE, CODE.FLAG_MINE];
         let i = 0;
         mines.includes(data[rowIndex - 1]?.[cellIndex - 1]) && i++;
@@ -138,7 +139,7 @@
 
       function open(rowIndex, cellIndex) {
         if (data[rowIndex]?.[cellIndex] >= CODE.OPENED) return;
-        const target = $tbody.children[rowIndex]?.children[cellIndex]; //
+        const target = $tbody.children[rowIndex]?.children[cellIndex];
         if (!target) {
           return;
         }
@@ -147,7 +148,7 @@
         target.className = "opened";
         data[rowIndex][cellIndex] = count;
         openCount++;
-        // console.log(openCount);
+        dev && console.log(openCount);
         // 콘솔에 몇개 열었는지 확인용
         if (openCount === row * cell - mine) {
           const time = (new Date() - startTime) / 1000;
@@ -169,6 +170,7 @@
           // setTimeout을 이용해 호출스택의 몫을 백그라운드와 태스크큐로 나눔
           const count = open(rI, cI);
           if (count === 0) {
+            //주변에 지뢰가 없을 시 주변에 지뢰가 없는 칸을 모두 탐색해 여는 코드
             openArounds(rI - 1, cI - 1);
             openArounds(rI - 1, cI);
             openArounds(rI - 1, cI + 1);
@@ -181,8 +183,8 @@
         }, 0);
       }
 
-      let normalCellFound = false;
-      let searched;
+      let normalCellFound = false; //빈칸을 찾았는지의 여부를 판단
+      let searched; //이미 탐색한 칸인지를 판단하기 위한 배열을 하나 더 만듦
       let firstClick = true;
 
       function transferMine(rI, cI) {
@@ -262,12 +264,13 @@
       function onLeftClick(event) {
         const target = event.target;
         const rowIndex = target.parentNode.rowIndex;
+        // [[],[],[],[]]-> 이런 구조이기 때문에
         const cellIndex = target.cellIndex;
         let cellData = data[rowIndex][cellIndex];
 
         if (firstClick) {
           firstClick = false;
-          searched = Array(row)
+          searched = Array(row) //같던 칸은 다시 안 가기 위해서 만듦
             .fill()
             .map(() => []);
           if (cellData === CODE.MINE) {
@@ -294,7 +297,8 @@
       }
 
       function drawTable() {
-        data = plantMine();
+        //화면 그리기&이벤트리스너 심기
+        data = plantMine(); //지뢰를 심은 칸 데이터 반환
         data.forEach((row) => {
           const $tr = document.createElement("tr");
           row.forEach((cell) => {

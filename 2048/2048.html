@@ -68,20 +68,41 @@
     <table id="table"></table>
     <div id="score">0</div>
     <script>
+      // 화면과 데이터는 일치해야만 한다
       const $table = document.getElementById("table");
       const $score = document.getElementById("score");
       let data = [];
+
       function startGame() {
         const $fragment = document.createDocumentFragment();
+        // 현업에서 화면 조작할 때 자주 씀
+        // $table -> $fragment -> $tr -> $td
+        // 성능 때문에 사용(내부는 직접 추가하는데 tr이 엄청 많을 경우 table.forEach 할 때 비효율)
+        // 화면은 안 그리고 메모리에만 저장되기 때문에 가상의 태그를 만들고 tr, td를 넣어주면 메모리에 일단 추가시키고
+        // $table.appendChild($fragment) 할 때 $fragment는 사라지고 화면이 한번에 추가 되기 때문에 효율이 좋음
         [1, 2, 3, 4].forEach(function () {
           const rowData = [];
           data.push(rowData);
           const $tr = document.createElement("tr");
           [1, 2, 3, 4].forEach(() => {
             rowData.push(0);
+            const $td = document.createElement("td");
+            $tr.appendChild($td);
           });
+          $fragment.appendChild($tr);
         });
+        $table.appendChild($fragment);
+        put2ToRendomCell();
+        draw();
       }
+
+      //랜덤 칸에 2 넣는 함수
+      function put2ToRendomCell() {}
+
+      //화면 그리는 함수
+      function draw() {}
+
+      startGame();
     </script>
   </body>
 </html>
