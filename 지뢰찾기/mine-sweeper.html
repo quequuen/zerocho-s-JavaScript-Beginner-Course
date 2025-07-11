@@ -65,6 +65,9 @@
       let interval; //인터벌 저장 변수
       const dev = false; // 개발모드 확인용 플래그 변수
       //데이터를 먼저 바꾸고 나서 데이터에 따라 화면을 구성, 수정하는 게 좋음
+      let normalCellFound = false; //빈칸을 찾았는지의 여부를 판단
+      let searched; //이미 탐색한 칸인지를 판단하기 위한 배열을 하나 더 만듦
+      let firstClick = true;
 
       //처음 폼의 버튼을 누를 시, 초기화와 함께 값 저장
       function onSubmit(event) {
@@ -152,6 +155,11 @@
         // 콘솔에 몇개 열었는지 확인용
         if (openCount === row * cell - mine) {
           const time = (new Date() - startTime) / 1000;
+          firstClick = true;
+          normalCellFound = false;
+          searched = [];
+          clearInterval(interval);
+          clearInterval(interval);
           clearInterval(interval);
           $tbody.removeEventListener("contextmenu", onRightClick);
           $tbody.removeEventListener("click", onLeftClick);
@@ -182,10 +190,6 @@
           }
         }, 0);
       }
-
-      let normalCellFound = false; //빈칸을 찾았는지의 여부를 판단
-      let searched; //이미 탐색한 칸인지를 판단하기 위한 배열을 하나 더 만듦
-      let firstClick = true;
 
       function transferMine(rI, cI) {
         //첫번째 칸을 눌렀을 때 해당 칸이 지뢰일 시 다른 칸으로 옮기는 함수
@@ -290,6 +294,11 @@
           target.textContent = "펑";
           target.className = "opened";
           clearInterval(interval);
+          clearInterval(interval);
+          clearInterval(interval);
+          firstClick = true;
+          normalCellFound = false;
+          searched = [];
           //Interval을 쓰면 클리어 하는 거 잊지 말자!
           $tbody.removeEventListener("contextmenu", onRightClick);
           $tbody.removeEventListener("click", onLeftClick);
