@@ -190,7 +190,7 @@
         if (normalCellFound) return; // 이미 빈 칸을 찾았으면 종료
         if (rI < 0 || rI >= row || cI < 0 || cI >= cell) return; //-1 값(undefined)을 막아주는 코드
         if (searched[rI][cI]) return; //이미 찾은 칸이면 종료
-        if (isNormal(data[rI]?.[cI])) {
+        if (data[rI][cI] === CODE.NORMAL) {
           //빈칸인 경우
           normalCellFound = true;
           data[rI][cI] = CODE.MINE;
@@ -214,7 +214,7 @@
         data.forEach((row, rowIndex) => {
           row.forEach((cell, cellIndex) => {
             if (mines.includes(cell)) {
-              $tbody.children[rowindex].children[cellindex].textContent = "X";
+              $tbody.children[rowIndex].children[cellIndex].textContent = "X";
             }
           });
         });
