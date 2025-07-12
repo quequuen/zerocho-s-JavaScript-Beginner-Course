@@ -97,10 +97,38 @@
       }
 
       //랜덤 칸에 2 넣는 함수
-      function put2ToRendomCell() {}
+      function put2ToRendomCell() {
+        //함수가 바깥 스코프의 변수를 사용하게 되면 재사용이 어려움
+        //재사용을 원할하게 하려면 바깥에 있는 변수들을 최소화하는 게 좋다.
+        const emptyCells = []; //[[i1,j1],[i2,j2],[i3,j3]]
+        data.forEach(function (rowData, i) {
+          rowData.forEach(function (cellData, j) {
+            if (!cellData) {
+              emptyCells.push([i, j]);
+            }
+          });
+        });
+        // randomCell = [i,j]
+        const randomCell =
+          emptyCells[Math.floor(Math.random() * emptyCells.length)];
+        data[randomCell[0]][randomCell[1]] = 2;
+      }
 
       //화면 그리는 함수
-      function draw() {}
+      function draw() {
+        data.forEach((rowData, i) => {
+          rowData.forEach((cellData, j) => {
+            const $target = $table.children[i].children[j]; //td
+            if (cellData > 0) {
+              $target.textContent = cellData;
+              $target.className = "color-" + cellData;
+            } else {
+              $target.textContent = "";
+              $target.className = "";
+            }
+          });
+        });
+      }
 
       startGame();
     </script>
