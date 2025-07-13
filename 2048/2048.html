@@ -68,6 +68,7 @@
     <table id="table"></table>
     <div id="score">0</div>
     <script>
+      let dev = true;
       // 화면과 데이터는 일치해야만 한다
       const $table = document.getElementById("table");
       const $score = document.getElementById("score");
@@ -131,6 +132,61 @@
       }
 
       startGame();
+
+      function moveCells(direction) {
+        dev && console.log(direction);
+      }
+
+      window.addEventListener("keyup", (event) => {
+        //키보드
+        if (event.key === "ArrowUp") {
+          moveCells("up");
+        } else if (event.key === "ArrowDown") {
+          moveCells("down");
+        } else if (event.key === "ArrowLeft") {
+          moveCells("left");
+        } else if (event.key === "ArrowRight") {
+          moveCells("right");
+        }
+      });
+
+      let startCoord;
+      window.addEventListener("mousedown", (event) => {
+        startCoord = [event.clientX, event.clientY];
+      });
+      window.addEventListener("mouseup", (event) => {
+        //드래그
+        const endCoord = [event.clientX, event.clientY];
+        const diffX = endCoord[0] - startCoord[0];
+        const diffY = endCoord[1] - startCoord[1];
+        if (diffX < 0 && Math.abs(diffX) > Math.abs(diffY)) {
+          moveCells("left");
+        } else if (diffX > 0 && Math.abs(diffX) > Math.abs(diffY)) {
+          moveCells("right");
+        } else if (diffY > 0 && Math.abs(diffX) <= Math.abs(diffY)) {
+          moveCells("down");
+        } else if (diffY < 0 && Math.abs(diffX) <= Math.abs(diffY)) {
+          moveCells("up");
+        }
+      });
+
+      // //보통 window에 추가함(더 넓은 범위에 추가하는 것)
+      // //참고용
+      // window.addEventListener("keydown", (event) => {
+      //   console.log("keydown", event);
+      // });
+      // window.addEventListener("keyup", (event) => {
+      //   console.log("keyup", event);
+      // });
+      // window.addEventListener("mousedown", (event) => {
+      //   console.log("mousedown", event);
+      // });
+      // window.addEventListener("mousemove", (event) => {
+      //   console.log("mousemove", event);
+      // });
+      // window.addEventListener("mouseup", (event) => {
+      //   console.log("mouseup", event);
+      // });
     </script>
   </body>
 </html>
