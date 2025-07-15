@@ -137,7 +137,7 @@
         data = [
           [0, 2, 4, 2],
           [0, 0, 8, 0],
-          [2, 2, 4, 8],
+          [2, 2, 1024, 1024],
           [0, 16, 0, 4],
         ];
         draw();
@@ -257,8 +257,19 @@
             break;
           }
         }
-        put2ToRendomCell();
-        draw();
+        if (data.flat().includes(2048)) {
+          //승리
+          draw();
+          setTimeout(() => {
+            alert("축하합니다. 2048을 만들었습니다!");
+          }, 0);
+        } else if (!data.flat().includes(0)) {
+          //빈 칸이 없으면 패배
+          alert("패배했습니다...");
+        } else {
+          put2ToRendomCell();
+          draw();
+        }
       }
 
       window.addEventListener("keyup", (event) => {
