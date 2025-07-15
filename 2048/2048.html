@@ -133,18 +133,23 @@
 
       startGame();
 
-      data = [
-        [0, 2, 4, 2],
-        [0, 0, 8, 0],
-        [2, 2, 2, 2],
-        [0, 16, 0, 4],
-      ];
+      if (dev) {
+        data = [
+          [0, 2, 4, 2],
+          [0, 0, 8, 0],
+          [2, 2, 4, 8],
+          [0, 16, 0, 4],
+        ];
+        draw();
+      }
 
       function moveCells(direction) {
         dev && console.log(direction);
         switch (direction) {
           case "left": {
+            //case 문에다 {}를 쓴 이유: case문 안에서 변수를 선언 했을 때는 {}를 쓰는 게 좋다.
             const newData = [[], [], [], []];
+            //임시로 넣은 데이터를 중심으로 새로운 데이터를 만들어냄
             data.forEach((rowData, i) => {
               rowData.forEach((cellData, j) => {
                 if (cellData) {
@@ -157,6 +162,7 @@
                     $score.textContent =
                       score + currentRow[currentRow.length - 1] * 2;
                     currentRow[currentRow.length - 1] *= -2;
+                    //그냥 2로 했을 시, 바로 옆과 데이터가 같아지기 때문에 바로 3개씩 합치거나 하는 경우가 생김
                   } else {
                     newData[i].push(cellData);
                   }
@@ -171,7 +177,88 @@
             });
             break;
           }
+          case "right": {
+            const newData = [[], [], [], []];
+            data.forEach((rowData, i) => {
+              rowData.forEach((cellData, j) => {
+                if (rowData[3 - j]) {
+                  const currentRow = newData[i];
+                  const prevData = currentRow[currentRow.length - 1];
+                  if (prevData === rowData[3 - j]) {
+                    const score = parseInt($score.textContent);
+                    $score.textContent =
+                      score + currentRow[currentRow.length - 1] * 2;
+                    currentRow[currentRow.length - 1] *= -2;
+                  } else {
+                    newData[i].push(rowData[3 - j]);
+                  }
+                }
+              });
+            });
+            console.log(newData);
+            [1, 2, 3, 4].forEach((rowData, i) => {
+              [1, 2, 3, 4].forEach((cellData, j) => {
+                data[i][3 - j] = Math.abs(newData[i][j]) || 0;
+                //계산할 때는 -,+를 구분하고 그릴 땐 절댓값을 이용하여 그림
+              });
+            });
+            break;
+          }
+          case "up": {
+            const newData = [[], [], [], []];
+            data.forEach((rowData, i) => {
+              rowData.forEach((cellData, j) => {
+                if (cellData) {
+                  const currentRow = newData[j];
+                  const prevData = currentRow[currentRow.length - 1];
+                  if (prevData === cellData) {
+                    const score = parseInt($score.textContent);
+                    $score.textContent =
+                      score + currentRow[currentRow.length - 1] * 2;
+                    currentRow[currentRow.length - 1] *= -2;
+                  } else {
+                    newData[j].push(cellData);
+                  }
+                }
+              });
+            });
+            console.log(newData);
+            [1, 2, 3, 4].forEach((cellData, i) => {
+              [1, 2, 3, 4].forEach((rowData, j) => {
+                data[j][i] = Math.abs(newData[i][j]) || 0;
+              });
+            });
+            break;
+          }
+          case "down": {
+            const newData = [[], [], [], []];
+            data.forEach((rowData, i) => {
+              rowData.forEach((cellData, j) => {
+                if (data[3 - i][j]) {
+                  const currentRow = newData[j];
+                  const prevData = currentRow[currentRow.length - 1];
+                  if (prevData === data[3 - i][j]) {
+                    const score = parseInt($score.textContent);
+                    $score.textContent =
+                      score + currentRow[currentRow.length - 1] * 2;
+                    currentRow[currentRow.length - 1] *= -2;
+                  } else {
+                    newData[j].push(data[3 - i][j]);
+                  }
+                }
+              });
+            });
+            console.log(newData);
+            [1, 2, 3, 4].forEach((cellData, i) => {
+              [1, 2, 3, 4].forEach((rowData, j) => {
+                data[3 - j][i] = Math.abs(newData[i][j]) || 0;
+              });
+            });
+            break;
+          }
         }
+        put2ToRendomCell();
+        draw();
       }
 
       window.addEventListener("keyup", (event) => {
