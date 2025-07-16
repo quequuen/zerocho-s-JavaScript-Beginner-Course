@@ -66,13 +66,24 @@
   </head>
   <body>
     <table id="table"></table>
-    <div id="score">0</div>
+    <span id="score">0</span>
+    <button id="back">되돌리기</button>
     <script>
-      let dev = true;
+      let dev = false;
       // 화면과 데이터는 일치해야만 한다
       const $table = document.getElementById("table");
       const $score = document.getElementById("score");
+      const $back = document.getElementById("back");
       let data = [];
+      const history = [];
+
+      $back.addEventListener("click", () => {
+        const prevData = history.pop(); //마지막꺼 빼기
+        if (!prevData) return; //되돌릴 게 없으면 종료
+        $score.textContent = prevData.score;
+        data = prevData.table;
+        draw();
+      });
 
       function startGame() {
         const $fragment = document.createDocumentFragment();
@@ -152,12 +163,18 @@
 
       function moveCells(direction) {
         dev && console.log(direction);
+        history.push({
+          table: JSON.parse(JSON.stringify(data)), //참조 관계 x, 깊은 복사로 독립적인 배열을 만듦
+          score: $score.textContent,
+        });
+        dev && console.log(history);
         switch (direction) {
           case "left": {
             //case 문에다 {}를 쓴 이유: case문 안에서 변수를 선언 했을 때는 {}를 쓰는 게 좋다.
             const newData = [[], [], [], []];
             //임시로 넣은 데이터를 중심으로 새로운 데이터를 만들어냄
             data.forEach((rowData, i) => {
+              //성능이 중요한 경우는 for문, 그게 아니라 깔끔한 게 중요하다면 forEach
               rowData.forEach((cellData, j) => {
                 if (cellData) {
                   // newData = [2, 2, 4]
@@ -259,7 +276,7 @@
           }, 0);
         } else if (!data.flat().includes(0)) {
           //빈 칸이 없으면 패배
-          alert("패배했습니다...");
+          alert(`패배했습니다...${$score.textContent}점`);
         } else {
           put2ToRendomCell();
           draw();
