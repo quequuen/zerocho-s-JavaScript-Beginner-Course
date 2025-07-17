@@ -95,6 +95,15 @@
         [1, 2, 3, 4].forEach(function () {
           const rowData = [];
           data.push(rowData);
+          //js는 객체, 배열이 대상이 될 때에는 참조 관계로 넘어가기 때문에
+          // 두번째 forEach가 나오기 전에 해당 부분을 넣어주더라도 참조로 인해 최종적으로는
+          // [
+          //   [0,0,0,0],
+          //   [0,0,0,0],
+          //   [0,0,0,0],
+          //   [0,0,0,0]
+          // ]
+          // 구조가 됨
           const $tr = document.createElement("tr");
           [1, 2, 3, 4].forEach(() => {
             rowData.push(0);
@@ -116,7 +125,7 @@
         data.forEach(function (rowData, i) {
           rowData.forEach(function (cellData, j) {
             if (!cellData) {
-              emptyCells.push([i, j]);
+              emptyCells.push([i, j]); //빈 데이터 칸이라면 칸의 인덱스를 emptyCells에 저장
             }
           });
         });
@@ -141,8 +150,6 @@
           });
         });
       }
-
-      startGame();
 
       if (dev) {
         data = [
@@ -170,7 +177,7 @@
         dev && console.log(history);
         switch (direction) {
           case "left": {
-            //case 문에다 {}를 쓴 이유: case문 안에서 변수를 선언 했을 때는 {}를 쓰는 게 좋다.
+            //case 문에다 {}를 쓴 이유: case문 안에서 변수를 선언 했을 때는 {}를 쓰는 게 좋다.(스코프를 주기 위해)
             const newData = [[], [], [], []];
             //임시로 넣은 데이터를 중심으로 새로운 데이터를 만들어냄
             data.forEach((rowData, i) => {
@@ -277,6 +284,7 @@
         } else if (!data.flat().includes(0)) {
           //빈 칸이 없으면 패배
           alert(`패배했습니다...${$score.textContent}점`);
+          //패배 하면 굳이 화면을 그릴 필요가 없음
         } else {
           put2ToRendomCell();
           draw();
@@ -296,15 +304,17 @@
         }
       });
 
-      let startCoord;
+      let startCoord; //드래그를 시작한 위치
       window.addEventListener("mousedown", (event) => {
         startCoord = [event.clientX, event.clientY];
       });
       window.addEventListener("mouseup", (event) => {
         //드래그
-        const endCoord = [event.clientX, event.clientY];
+        const endCoord = [event.clientX, event.clientY]; //드래그를 끝낸 위치
         const diffX = endCoord[0] - startCoord[0];
+        //양수라면 오른쪽, 음수라면 왼쪽
         const diffY = endCoord[1] - startCoord[1];
+        //양수라면 위쪽, 음수라면 아래쪽
         if (diffX < 0 && Math.abs(diffX) > Math.abs(diffY)) {
           moveCells("left");
         } else if (diffX > 0 && Math.abs(diffX) > Math.abs(diffY)) {
@@ -333,6 +343,8 @@
       // window.addEventListener("mouseup", (event) => {
       //   console.log("mouseup", event);
       // });
+
+      startGame();
     </script>
   </body>
 </html>
