@@ -1,0 +1,160 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>두더지 잡기</title>
+    <style>
+      .cell {
+        display: inline-block;
+        position: relative;
+        width: 200px;
+        height: 200px;
+        background: "yellow";
+        overflow: hidden;
+      }
+      .gopher,
+      .bomb {
+        width: 200px;
+        height: 200px;
+        bottom: 0;
+        position: absolute;
+        transition: bottom 1s;
+      }
+      .gopher {
+        background: url("./gopher.png") center center no-repeat;
+        background-size: 200px 200px;
+      }
+      .dead {
+        background: url("./dead_gopher.png") center center no-repeat;
+        background-size: 200px 200px;
+      }
+      .bomb {
+        background: url("./bomb.png") center center no-repeat;
+        background-size: 200px 200px;
+      }
+      .boom {
+        background: url("./explode.png") center center no-repeat;
+        background-size: 200px 200px;
+      }
+      .hidden {
+        bottom: -200px;
+      }
+      .hole {
+        width: 200px;
+        height: 150px;
+        position: absolute;
+        bottom: 0;
+        background: url("./mole-hole.png") center center no-repeat;
+        background-size: 200px 150px;
+      }
+      .hole-front {
+        width: 200px;
+        height: 30px;
+        position: absolute;
+        bottom: 0;
+        background: url("./mole-hole-front.png") center center no-repeat;
+        background-size: 200px 30px;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <span id="timer">8</span>초&nbsp; <span id="score">0</span>점
+      <button id="start">시작</button>
+    </div>
+    <div id="game">
+      <div class="row">
+        <div class="cell">
+          <div class="hole"></div>
+          <div class="gopher hidden"></div>
+          <div class="bomb hidden"></div>
+          <div class="hole-front"></div>
+        </div>
+        <div class="cell">
+          <div class="hole"></div>
+          <div class="gopher hidden"></div>
+          <div class="bomb hidden"></div>
+          <div class="hole-front"></div>
+        </div>
+        <div class="cell">
+          <div class="hole"></div>
+          <div class="gopher hidden"></div>
+          <div class="bomb hidden"></div>
+          <div class="hole-front"></div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="cell">
+          <div class="hole"></div>
+          <div class="gopher hidden"></div>
+          <div class="bomb hidden"></div>
+          <div class="hole-front"></div>
+        </div>
+        <div class="cell">
+          <div class="hole"></div>
+          <div class="gopher hidden"></div>
+          <div class="bomb hidden"></div>
+          <div class="hole-front"></div>
+        </div>
+        <div class="cell">
+          <div class="hole"></div>
+          <div class="gopher hidden"></div>
+          <div class="bomb hidden"></div>
+          <div class="hole-front"></div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="cell">
+          <div class="hole"></div>
+          <div class="gopher hidden"></div>
+          <div class="bomb hidden"></div>
+          <div class="hole-front"></div>
+        </div>
+        <div class="cell">
+          <div class="hole"></div>
+          <div class="gopher hidden"></div>
+          <div class="bomb hidden"></div>
+          <div class="hole-front"></div>
+        </div>
+        <div class="cell">
+          <div class="hole"></div>
+          <div class="gopher hidden"></div>
+          <div class="bomb hidden"></div>
+          <div class="hole-front"></div>
+        </div>
+      </div>
+    </div>
+    <script>
+      //3x3 고정이기 때문에 그냥 html로 화면을 그림
+      //html은 특성상 뒤에 나오는 요소가 위에 위치함
+      const $timer = document.querySelector("#timer");
+      const $score = document.querySelector("#score");
+      const $game = document.querySelector("#game");
+      const $start = document.querySelector("#start");
+      const $$cells = document.querySelectorAll(".cell");
+
+      const holes = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+      let started = false;
+      let score = 0;
+      $start.addEventListener("click", () => {
+        if (started) return;
+        started = true;
+        console.log("시작");
+        const tickId = setInterval(tick, 1000);
+        tick();
+      });
+
+      function tick() {
+        //함수의 이름을 잘 만들어두면 하나의 설명서 역할을 하기 때문에 코드가 길면 함수로 빼기도 한다.
+        holes.forEach((hole, index) => {
+          const $gopher = $$cells[index].querySelector(".gopher");
+          holes[index] = setTimeout(() => {
+            //1초 뒤에 사라짐(비동기라서 remove가 더 먼저 실행됨) 이벤트 루프 복습
+            $gopher.classList.add("hidden");
+            holes[index] = 0;
+          }, 1000);
+          $gopher.classList.remove("hidden");
+        });
+      }
+    </script>
+  </body>
+</html>
