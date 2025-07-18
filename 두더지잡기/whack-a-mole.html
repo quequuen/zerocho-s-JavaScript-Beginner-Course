@@ -58,7 +58,8 @@
   </head>
   <body>
     <div>
-      <span id="timer">0</span>초&nbsp; <span id="score">0</span>점
+      <span id="timer">8</span>초&nbsp; <span id="score">0</span>점&nbsp;
+      <span id="life">3</span>목숨
       <button id="start">시작</button>
     </div>
     <div id="game">
@@ -128,6 +129,7 @@
       //html은 특성상 뒤에 나오는 요소가 위에 위치함
       const $timer = document.querySelector("#timer");
       const $score = document.querySelector("#score");
+      const $life = document.querySelector("#life");
       const $game = document.querySelector("#game");
       const $start = document.querySelector("#start");
       const $$cells = document.querySelectorAll(".cell");
@@ -138,12 +140,15 @@
       let started = false;
       let score = 0;
       let time = 10;
+      let life = 3;
+      let timerId;
+      let tickId;
       $start.addEventListener("click", () => {
         if (started) return;
         started = true;
         console.log("시작");
         $timer.textContent = time;
-        const timerId = setInterval(() => {
+        timerId = setInterval(() => {
           time = (time * 10 - 1) / 10; //time -= 0.1; 소수점 계산 시 문제있음
           $timer.textContent = time;
           if (time === 0) {
@@ -154,7 +159,7 @@
             }, 50);
           }
         }, 100);
-        const tickId = setInterval(tick, 1000);
+        tickId = setInterval(tick, 1000);
         //호출스택이 모두 끝난 뒤, setTimeout과 setInterval 내용이 같이 실행되기 때문에 remove와 add가 동시에 되어서 나오지 않음
         //이 현상을 막기 위한 방법은 무언가가 작동하고 있을 때 setTimeout이 호출되지 않게 hole에 값이 있으면 return;
         tick();
@@ -165,7 +170,7 @@
       //누적으로 진행(random값에서 0.3 이하가 나오면 gopher, 0.5이하가 나오면 bomb)
 
       function tick() {
-        //함수의 이름을 잘 만들어두면 하나의 설명서 역할을 하기 때문에 코드가 길면 함수로 빼기도 한다.
+        // //함수의 이름을 잘 만들어두면 하나의 설명서 역할을 하기 때문에 코드가 길면 함수로 빼기도 한다.
         // holes.forEach((hole, index) => {
         //   if (hole) return; //무언가 일어나고 있으면 return
         //   const $gopher = $$cells[index].querySelector(".gopher");
@@ -230,6 +235,15 @@
             holes[index] = 0;
             event.target.classList.remove("boom");
           }, 1000);
+          life--;
+          $life.textContent = life;
+          if (life === 0) {
+            clearInterval(timerId);
+            clearInterval(tickId);
+            setTimeout(() => {
+              alert(`게임 오버! 점수는 ${score}점`);
+            }, 50);
+          }
         });
       });
     </script>
