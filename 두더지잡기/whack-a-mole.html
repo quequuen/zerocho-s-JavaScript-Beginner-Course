@@ -149,6 +149,7 @@
         console.log("시작");
         $timer.textContent = time;
         timerId = setInterval(() => {
+          //0.1초마다 9.9->9.8 이런 식으로 0.1초씩 타이머가 줄어들음
           time = (time * 10 - 1) / 10; //time -= 0.1; 소수점 계산 시 문제있음
           $timer.textContent = time;
           if (time === 0) {
@@ -162,7 +163,7 @@
         tickId = setInterval(tick, 1000);
         //호출스택이 모두 끝난 뒤, setTimeout과 setInterval 내용이 같이 실행되기 때문에 remove와 add가 동시에 되어서 나오지 않음
         //이 현상을 막기 위한 방법은 무언가가 작동하고 있을 때 setTimeout이 호출되지 않게 hole에 값이 있으면 return;
-        tick();
+        tick(); //이걸 하지 않으면 이벤트루프에서 밀려서 시작과 동시에 시작하지 못함
       });
       let gopherPercent = 0.3;
       let bombPercent = 0.5;
@@ -186,11 +187,13 @@
         //   $gopher.classList.remove("hidden");
         // });
         holes.forEach((hole, index) => {
+          //hole
           if (hole) return; // 무언가 일어나고 있으면 return
           const randomValue = Math.random();
+          //Math.random()은 0보다 크고 1보다 작은 수의 난수를 생성함
           if (randomValue < gopherPercent) {
             //두더지가 나옴
-            const $gopher = $$cells[index].querySelector(".gopher");
+            const $gopher = $$cells[index].querySelector(".gopher"); //하나의 셀에 두더지, 폭탄 요소가 같이 있음
             holes[index] = setTimeout(() => {
               // 1초 뒤에 사라짐
               $gopher.classList.add("hidden");
@@ -207,6 +210,7 @@
             }, 1000);
             $bomb.classList.remove("hidden");
           } else {
+            //그 외(50%)는 동작 안함
           }
         });
       }
@@ -221,7 +225,7 @@
           }
           event.target.classList.add("dead");
           event.target.classList.add("hidden");
-          clearTimeout(holes[index]); // 기존 내려가는 타이머 제거
+          clearTimeout(holes[index]); // 기존 내려가는 타이머 제거(1초 뒤에 또 숨겨지는 걸 막기 위해)
           setTimeout(() => {
             holes[index] = 0;
             event.target.classList.remove("dead");
