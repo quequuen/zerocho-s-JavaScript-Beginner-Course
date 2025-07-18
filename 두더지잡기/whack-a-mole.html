@@ -58,7 +58,7 @@
   </head>
   <body>
     <div>
-      <span id="timer">8</span>초&nbsp; <span id="score">0</span>점
+      <span id="timer">0</span>초&nbsp; <span id="score">0</span>점
       <button id="start">시작</button>
     </div>
     <div id="game">
@@ -133,28 +133,105 @@
       const $$cells = document.querySelectorAll(".cell");
 
       const holes = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+      //타이머 아이디가 저장됨
+      //타이머 취소를 위해 저장함
       let started = false;
       let score = 0;
+      let time = 10;
       $start.addEventListener("click", () => {
         if (started) return;
         started = true;
         console.log("시작");
+        $timer.textContent = time;
+        const timerId = setInterval(() => {
+          time = (time * 10 - 1) / 10; //time -= 0.1; 소수점 계산 시 문제있음
+          $timer.textContent = time;
+          if (time === 0) {
+            setTimeout(() => {
+              clearInterval(timerId);
+              clearInterval(tickId);
+              alert(`게임 오버! 점수는 ${score}점`);
+            }, 50);
+          }
+        }, 100);
         const tickId = setInterval(tick, 1000);
+        //호출스택이 모두 끝난 뒤, setTimeout과 setInterval 내용이 같이 실행되기 때문에 remove와 add가 동시에 되어서 나오지 않음
+        //이 현상을 막기 위한 방법은 무언가가 작동하고 있을 때 setTimeout이 호출되지 않게 hole에 값이 있으면 return;
         tick();
       });
+      let gopherPercent = 0.3;
+      let bombPercent = 0.5;
+      // 0,1,2,3,4,5,6,7,8,9
+      //누적으로 진행(random값에서 0.3 이하가 나오면 gopher, 0.5이하가 나오면 bomb)
 
       function tick() {
         //함수의 이름을 잘 만들어두면 하나의 설명서 역할을 하기 때문에 코드가 길면 함수로 빼기도 한다.
+        // holes.forEach((hole, index) => {
+        //   if (hole) return; //무언가 일어나고 있으면 return
+        //   const $gopher = $$cells[index].querySelector(".gopher");
+        //   holes[index] = setTimeout(() => {
+        //     //1초 뒤에 사라짐(비동기라서 remove가 더 먼저 실행됨) 이벤트 루프 복습
+        //     //서로 같은 값을 같지만 hole이 아닌 holes에 값을 넣는 이유:
+        //     //참조관계가 일어나게 하기 위해 holes라는 배열에 넣어야 함
+        //     //hole에 대입하게 되면 그냥 복사임
+        //     $gopher.classList.add("hidden");
+        //     holes[index] = 0;
+        //   }, 1000);
+        //   // setTimeout의 리턴값은 타이머 아이디임
+        //   $gopher.classList.remove("hidden");
+        // });
         holes.forEach((hole, index) => {
-          const $gopher = $$cells[index].querySelector(".gopher");
-          holes[index] = setTimeout(() => {
-            //1초 뒤에 사라짐(비동기라서 remove가 더 먼저 실행됨) 이벤트 루프 복습
-            $gopher.classList.add("hidden");
-            holes[index] = 0;
-          }, 1000);
-          $gopher.classList.remove("hidden");
+          if (hole) return; // 무언가 일어나고 있으면 return
+          const randomValue = Math.random();
+          if (randomValue < gopherPercent) {
+            //두더지가 나옴
+            const $gopher = $$cells[index].querySelector(".gopher");
+            holes[index] = setTimeout(() => {
+              // 1초 뒤에 사라짐
+              $gopher.classList.add("hidden");
+              holes[index] = 0;
+            }, 1000);
+            $gopher.classList.remove("hidden");
+          } else if (randomValue < bombPercent) {
+            //폭탄이 나옴
+            const $bomb = $$cells[index].querySelector(".bomb");
+            holes[index] = setTimeout(() => {
+              // 1초 뒤에 사라짐
+              $bomb.classList.add("hidden");
+              holes[index] = 0;
+            }, 1000);
+            $bomb.classList.remove("hidden");
+          } else {
+          }
         });
       }
+
+      $$cells.forEach(($cell, index) => {
+        $cell.querySelector(".gopher").addEventListener("click", (event) => {
+          if (!event.target.classList.contains("dead")) {
+            //밑에 클래스에 add("dead")를 하기 전에 나와야 작동
+            //이미 클릭한 두더지이면 점수X
+            score += 1;
+            $score.textContent = score;
+          }
+          event.target.classList.add("dead");
+          event.target.classList.add("hidden");
+          clearTimeout(holes[index]); // 기존 내려가는 타이머 제거
+          setTimeout(() => {
+            holes[index] = 0;
+            event.target.classList.remove("dead");
+          }, 1000);
+        });
+        $cell.querySelector(".bomb").addEventListener("click", (event) => {
+          event.target.classList.add("boom");
+          event.target.classList.add("hidden");
+          clearTimeout(holes[index]); // 기존 내려가는 타이머 제거
+          setTimeout(() => {
+            holes[index] = 0;
+            event.target.classList.remove("boom");
+          }, 1000);
+        });
+      });
     </script>
   </body>
 </html>
